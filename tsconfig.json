@@ -12,11 +12,11 @@
     "rootDir": "src",
     "baseUrl": "src",
     "experimentalDecorators": true,
-    "isolatedModules": false,
+    "isolatedModules": true,
     "emitDecoratorMetadata": true,
     "strict": true,
     "paths": {
-      "@*": ["./*"]
+      "@/*": ["./*"]
     }
   },
   "lib": ["es6"],
