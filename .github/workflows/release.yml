@@ -1,0 +1,51 @@
+name: Deploying
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Get version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@main
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.package-version.outputs.current-version }}
+        release_name: Backend v${{ steps.package-version.outputs.current-version }}
+        draft: false
+        prerelease: false
+
+  registry:
+    name: Push to registry
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Get version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@main
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build
+      uses: docker/build-push-action@v4
+      with:
+        tags: |
+          backend:latest
+          backend:v${{ steps.package-version.outputs.current-version }}

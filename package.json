@@ -1,0 +1,32 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://github.com/movie-web/backend",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "nodemon -r tsconfig-paths/register src/main.ts",
+    "build": "npm run build:pre && npm run build:compile",
+    "start": "node dist/main.js",
+    "lint": "eslint --ext .ts,.js,.json,.tsx src/",
+    "lint:fix": "eslint --fix --ext .ts,.js,.json,.tsx src/",
+    "build:pre": "rimraf dist/",
+    "build:compile": "tsc && tsc-alias"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.3",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "nodemon": "^3.0.1",
+    "rimraf": "^5.0.1",
+    "ts-node": "^10.9.1",
+    "tsc-alias": "^1.8.7",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.6"
+  }
+}
