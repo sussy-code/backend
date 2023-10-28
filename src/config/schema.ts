@@ -38,4 +38,8 @@ export const configSchema = z.object({
     // it is extremely destructive, do not use it EVER in production
     syncSchema: z.coerce.boolean().default(false),
   }),
+  crypto: z.object({
+    // session secret. used for signing session tokens
+    sessionSecret: z.string().min(32),
+  }),
 });

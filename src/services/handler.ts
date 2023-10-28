@@ -1,4 +1,5 @@
 import { getORM } from '@/modules/mikro';
+import { makeAuthContext } from '@/services/auth';
 import { EntityManager } from '@mikro-orm/postgresql';
 import {
   ContextConfigDefault,
@@ -73,6 +74,7 @@ export type RequestContext<
     Logger
   >['query'];
   em: EntityManager;
+  auth: ReturnType<typeof makeAuthContext>;
 };
 
 export function handle<
@@ -112,6 +114,7 @@ export function handle<
   Logger
 > {
   const reqHandler: any = async (req: any, res: any) => {
+    const em = getORM().em.fork();
     res.send(
       await handler({
         req,
@@ -119,7 +122,8 @@ export function handle<
         body: req.body,
         params: req.params,
         query: req.query,
-        em: getORM().em.fork(),
+        em,
+        auth: makeAuthContext(em, req),
       }),
     );
   };

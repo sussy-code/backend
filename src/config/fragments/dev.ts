@@ -12,4 +12,7 @@ export const devFragment: FragmentSchema = {
   postgres: {
     syncSchema: true,
   },
+  crypto: {
+    sessionSecret: 'aINCithRivERecKENdmANDRaNKenSiNi',
+  },
 };

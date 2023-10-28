@@ -16,6 +16,7 @@
     "build:compile": "tsc && tsc-alias"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.4",
     "@types/node": "^20.5.3",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
@@ -36,6 +37,7 @@
     "@mikro-orm/postgresql": "^5.9.0",
     "fastify": "^4.21.0",
     "fastify-type-provider-zod": "^1.1.9",
+    "jsonwebtoken": "^9.0.2",
     "neat-config": "^2.0.0",
     "type-fest": "^4.2.0",
     "winston": "^3.10.0",
