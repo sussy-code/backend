@@ -1,16 +1,21 @@
 FROM node:20-alpine
 WORKDIR /app
 
-# install dependencies
-COPY package*.json ./
-RUN npm ci
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+# install packages
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # build source
 COPY . ./
-RUN npm run build
+RUN pnpm run build
 
 # start server
 EXPOSE 80
 ENV MWB_SERVER__PORT=80
 ENV NODE_ENV=production
-CMD ["npm", "run", "start"]
+CMD ["pnpm", "run", "start"]

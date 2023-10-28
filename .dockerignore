@@ -5,3 +5,4 @@ dist
 .git
 .vscode
 .docker
+.pnpm-store

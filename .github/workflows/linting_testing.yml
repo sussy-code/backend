@@ -15,18 +15,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
+                  
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'yarn'
+          cache: 'pnpm'
       
-      - name: Install Yarn packages
-        run: yarn install
+      - name: Install packages
+        run: pnpm i
       
       - name: Run ESLint
-        run: yarn lint
+        run: pnpm run lint
 
   building:
     name: Build project
@@ -35,18 +39,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
+                  
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'yarn'
+          cache: 'pnpm'
       
-      - name: Install Yarn packages
-        run: yarn install
+      - name: Install packages
+        run: pnpm install
 
       - name: Build Project
-        run: yarn build
+        run: pnpm build
 
   docker:
     name: Build docker

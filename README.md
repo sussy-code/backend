@@ -20,7 +20,7 @@ Backend for movie-web
   - [ ] user count
   - [ ] provider metrics
  - [ ] ratelimits (stored in redis)
- - [ ] switch to pnpm
+ - [X] switch to pnpm
  - [ ] think of privacy centric method of auth
   - [ ] Register
   - [ ] Login
