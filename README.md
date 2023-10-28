@@ -3,14 +3,14 @@ Backend for movie-web
 
 ## Todo list
  - [ ] standard endpoints:
-  - [ ] make account (PFP, account name)
-  - [ ] login
+  - [X] make account (PFP, account name)
+  - [X] login (Pending Actual Auth)
   - [X] logout a session
-  - [ ] read all sessions from logged in user
-  - [ ] edit current session device name
-  - [ ] edit account name and PFP
-  - [ ] delete logged in user
-  - [ ] backend meta (name and description)
+  - [X] read all sessions from logged in user
+  - [X] edit current session device name
+  - [X] edit account name and PFP
+  - [X] delete logged in user
+  - [X] backend meta (name and description)
   - [ ] upsert settings
   - [ ] upsert watched items
   - [ ] upsert bookmarks
@@ -22,4 +22,6 @@ Backend for movie-web
  - [ ] ratelimits (stored in redis)
  - [ ] switch to pnpm
  - [ ] think of privacy centric method of auth
+  - [ ] Register
+  - [ ] Login
  - [ ] global namespacing (accounts are stored on a namespace)

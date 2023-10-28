@@ -28,7 +28,7 @@ export async function getSessionAndBump(
     accessedAt: new Date(),
     expiresAt: new Date(Date.now() + SESSION_EXPIRY_MS),
   });
-  await em.flush();
+  await em.persistAndFlush(session);
   return session;
 }
 
@@ -52,14 +52,14 @@ export function makeSession(
 
 export function makeSessionToken(session: Session): string {
   return sign({ sid: session.id }, conf.crypto.sessionSecret, {
-    algorithm: 'ES512',
+    algorithm: 'HS256',
   });
 }
 
 export function verifySessionToken(token: string): { sid: string } | null {
   try {
     const payload = verify(token, conf.crypto.sessionSecret, {
-      algorithms: ['ES512'],
+      algorithms: ['HS256'],
     });
     if (typeof payload === 'string') return null;
     return payload as { sid: string };

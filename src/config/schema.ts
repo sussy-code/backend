@@ -42,4 +42,10 @@ export const configSchema = z.object({
     // session secret. used for signing session tokens
     sessionSecret: z.string().min(32),
   }),
+  meta: z.object({
+    // name and description of this backend
+    // this is displayed to the client when making an account
+    name: z.string().min(1),
+    description: z.string().min(1).optional(),
+  }),
 });

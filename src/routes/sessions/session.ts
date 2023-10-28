@@ -4,7 +4,7 @@ import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
 import { z } from 'zod';
 
-export const authSessionRouter = makeRouter((app) => {
+export const sessionRouter = makeRouter((app) => {
   app.delete(
     '/sessions/:sid',
     {

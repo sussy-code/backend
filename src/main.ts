@@ -9,8 +9,8 @@ async function bootstrap(): Promise<void> {
     evt: 'setup',
   });
 
-  await setupFastify();
   await setupMikroORM();
+  await setupFastify();
 
   log.info(`App setup, ready to accept connections`, {
     evt: 'success',

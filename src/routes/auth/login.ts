@@ -1,28 +1,26 @@
 import { formatSession } from '@/db/models/Session';
-import { User, formatUser } from '@/db/models/User';
+import { User } from '@/db/models/User';
+import { StatusError } from '@/services/error';
 import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
 import { makeSession, makeSessionToken } from '@/services/session';
 import { z } from 'zod';
 
-const registerSchema = z.object({
-  name: z.string().max(500).min(1),
+const loginSchema = z.object({
+  id: z.string(),
   device: z.string().max(500).min(1),
-  profile: z.object({
-    colorA: z.string(),
-    colorB: z.string(),
-    icon: z.string(),
-  }),
 });
 
-export const manageAuthRouter = makeRouter((app) => {
+export const loginAuthRouter = makeRouter((app) => {
   app.post(
-    '/auth/register',
-    { schema: { body: registerSchema } },
+    '/auth/login',
+    { schema: { body: loginSchema } },
     handle(async ({ em, body, req }) => {
-      const user = new User();
-      user.name = body.name;
-      user.profile = body.profile;
+      const user = await em.findOne(User, { id: body.id });
+
+      if (user == null) {
+        throw new StatusError('User cannot be found', 401);
+      }
 
       const session = makeSession(
         user.id,
@@ -30,10 +28,9 @@ export const manageAuthRouter = makeRouter((app) => {
         req.headers['user-agent'],
       );
 
-      await em.persistAndFlush([user, session]);
+      await em.persistAndFlush(session);
 
       return {
-        user: formatUser(user),
         session: formatSession(session),
         token: makeSessionToken(session),
       };

@@ -15,4 +15,9 @@ export const devFragment: FragmentSchema = {
   crypto: {
     sessionSecret: 'aINCithRivERecKENdmANDRaNKenSiNi',
   },
+  meta: {
+    name: 'movie-web development',
+    description:
+      "This backend is only used in development, do not create an account if you this isn't your own instance",
+  },
 };

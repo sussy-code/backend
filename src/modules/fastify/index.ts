@@ -8,6 +8,7 @@ import {
   validatorCompiler,
 } from 'fastify-type-provider-zod';
 import { ZodError } from 'zod';
+import { StatusError } from '@/services/error';
 
 const log = scopedLogger('fastify');
 
@@ -31,8 +32,8 @@ export async function setupFastify(): Promise<FastifyInstance> {
       return;
     }
 
-    if (err.statusCode) {
-      reply.status(err.statusCode).send({
+    if (err instanceof StatusError) {
+      reply.status(err.errorStatusCode).send({
         errorType: 'message',
         message: err.message,
       });

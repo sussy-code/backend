@@ -27,7 +27,7 @@ export class Session {
 
 export interface SessionDTO {
   id: string;
-  user: string;
+  userId: string;
   createdAt: string;
   accessedAt: string;
   device: string;
@@ -37,7 +37,7 @@ export interface SessionDTO {
 export function formatSession(session: Session): SessionDTO {
   return {
     id: session.id,
-    user: session.id,
+    userId: session.user,
     createdAt: session.createdAt.toISOString(),
     accessedAt: session.accessedAt.toISOString(),
     device: session.device,

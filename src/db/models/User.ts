@@ -1,6 +1,12 @@
 import { Entity, PrimaryKey, Property, types } from '@mikro-orm/core';
 import { randomUUID } from 'crypto';
 
+export type UserProfile = {
+  colorA: string;
+  colorB: string;
+  icon: string;
+};
+
 @Entity({ tableName: 'users' })
 export class User {
   @PrimaryKey({ name: 'id', type: 'uuid' })
@@ -14,18 +20,36 @@ export class User {
 
   @Property({ name: 'permissions', type: types.array })
   roles: string[] = [];
+
+  @Property({
+    name: 'profile',
+    type: types.json,
+  })
+  profile!: UserProfile;
 }
 
 export interface UserDTO {
   id: string;
+  name: string;
   roles: string[];
   createdAt: string;
+  profile: {
+    colorA: string;
+    colorB: string;
+    icon: string;
+  };
 }
 
 export function formatUser(user: User): UserDTO {
   return {
     id: user.id,
+    name: user.name,
     roles: user.roles,
     createdAt: user.createdAt.toISOString(),
+    profile: {
+      colorA: user.profile.colorA,
+      colorB: user.profile.colorB,
+      icon: user.profile.icon,
+    },
   };
 }

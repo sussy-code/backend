@@ -16,10 +16,10 @@ export function makeAuthContext(manager: EntityManager, req: FastifyRequest) {
       const header = req.headers.authorization;
       if (!header) return null;
       const [type, token] = header.split(' ', 2);
-      if (type.toLowerCase() !== 'Bearer')
-        throw new StatusError('Invalid auth', 400);
+      if (type.toLowerCase() !== 'bearer')
+        throw new StatusError('Invalid authentication', 400);
       const payload = verifySessionToken(token);
-      if (!payload) throw new StatusError('Invalid auth', 400);
+      if (!payload) throw new StatusError('Invalid authentication', 400);
       return payload.sid;
     },
     async getSession() {
@@ -27,7 +27,7 @@ export function makeAuthContext(manager: EntityManager, req: FastifyRequest) {
       const sid = this.getSessionId();
       if (!sid) return null;
       const session = await getSessionAndBump(em, sid);
-      if (session) return null;
+      if (!session) return null;
       sessionCache = session;
       return session;
     },
@@ -42,7 +42,7 @@ export function makeAuthContext(manager: EntityManager, req: FastifyRequest) {
     },
     async assert() {
       const user = await this.getUser();
-      if (!user) throw new StatusError('Not logged in', 403);
+      if (!user) throw new StatusError('Not logged in', 401);
       return user;
     },
     get user() {
@@ -56,7 +56,7 @@ export function makeAuthContext(manager: EntityManager, req: FastifyRequest) {
     async assertHasRole(role: Roles) {
       const user = await this.assert();
       const hasRole = user.roles.includes(role);
-      if (!hasRole) throw new StatusError('No permissions', 401);
+      if (!hasRole) throw new StatusError('No permissions', 403);
     },
   };
 }
