@@ -4,3 +4,4 @@ config.json
 dist
 .git
 .vscode
+.docker

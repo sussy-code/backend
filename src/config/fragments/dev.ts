@@ -9,4 +9,7 @@ export const devFragment: FragmentSchema = {
     format: 'pretty',
     debug: true,
   },
+  postgres: {
+    syncSchema: true,
+  },
 };

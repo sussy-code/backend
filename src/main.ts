@@ -1,4 +1,5 @@
 import { setupFastify } from '@/modules/fastify';
+import { setupMikroORM } from '@/modules/mikro';
 import { scopedLogger } from '@/services/logger';
 
 const log = scopedLogger('mw-backend');
@@ -9,6 +10,7 @@ async function bootstrap(): Promise<void> {
   });
 
   await setupFastify();
+  await setupMikroORM();
 
   log.info(`App setup, ready to accept connections`, {
     evt: 'success',

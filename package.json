@@ -32,6 +32,8 @@
   },
   "dependencies": {
     "@fastify/cors": "^8.3.0",
+    "@mikro-orm/core": "^5.9.0",
+    "@mikro-orm/postgresql": "^5.9.0",
     "fastify": "^4.21.0",
     "fastify-type-provider-zod": "^1.1.9",
     "neat-config": "^2.0.0",
