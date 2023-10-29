@@ -2,7 +2,7 @@
 Backend for movie-web
 
 ## Todo list
- - [ ] standard endpoints:
+ - [X] standard endpoints:
   - [X] make account (PFP, account name)
   - [X] login (Pending Actual Auth)
   - [X] logout a session
@@ -18,19 +18,21 @@ Backend for movie-web
   - [X] GET settings
   - [X] GET progress items
   - [X] DELETE progress items
-  - [ ] consume provider metrics
+  - [X] GET user with @me
   - [X] DELETE user - should delete all associated data
- - [ ] prometheus metrics
+ - [X] prometheus metrics
   - [X] requests
   - [X] user count
-  - [ ] provider metrics
- - [ ] ratelimits (stored in redis)
  - [X] switch to pnpm
  - [X] catpcha support
  - [X] global namespacing (accounts are stored on a namespace)
- - [ ] cleanup jobs
+ - [X] cleanup jobs
   - [X] cleanup expired sessions
-  - [ ] cleanup old provider metrics
+ - [ ] ratelimits (stored in redis)
+ - [ ] provider metrics
+  - [ ] cleanup old metrics in DB
+  - [ ] endpoint to consume and store metrics
+  - [ ] pass metrics to prometheus
 
 ## Second todo list
  - [ ] think of privacy centric method of auth
