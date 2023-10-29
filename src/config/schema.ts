@@ -55,6 +55,8 @@ export const configSchema = z.object({
 
       // captcha secret
       secret: z.string().min(1).optional(),
+
+      clientKey: z.string().min(1).optional(),
     })
     .default({}),
 });
