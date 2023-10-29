@@ -11,17 +11,28 @@ Backend for movie-web
   - [X] edit account name and PFP
   - [X] delete logged in user
   - [X] backend meta (name and description)
-  - [ ] upsert settings
-  - [ ] upsert watched items
-  - [ ] upsert bookmarks
+  - [X] upsert settings
+  - [X] upsert progress items
+  - [X] upsert bookmarks
+  - [X] GET bookmarks
+  - [X] GET settings
+  - [X] GET progress items
+  - [X] DELETE progress items
   - [ ] consume provider metrics
+  - [ ] DELETE user - should delete all associated data
  - [ ] prometheus metrics
   - [ ] requests
   - [ ] user count
   - [ ] provider metrics
  - [ ] ratelimits (stored in redis)
  - [X] switch to pnpm
+ - [ ] catpcha support
+ - [ ] global namespacing (accounts are stored on a namespace)
+ - [ ] cleanup jobs
+  - [ ] cleanup expired sessions
+  - [ ] cleanup old metrics
+
+## Second todo list
  - [ ] think of privacy centric method of auth
   - [ ] Register
   - [ ] Login
- - [ ] global namespacing (accounts are stored on a namespace)
