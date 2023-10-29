@@ -26,7 +26,7 @@ Backend for movie-web
   - [ ] provider metrics
  - [ ] ratelimits (stored in redis)
  - [X] switch to pnpm
- - [ ] catpcha support
+ - [X] catpcha support
  - [ ] global namespacing (accounts are stored on a namespace)
  - [ ] cleanup jobs
   - [ ] cleanup expired sessions

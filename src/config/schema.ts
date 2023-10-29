@@ -48,4 +48,13 @@ export const configSchema = z.object({
     name: z.string().min(1),
     description: z.string().min(1).optional(),
   }),
+  captcha: z
+    .object({
+      // enabled captchas on register
+      enabled: z.coerce.boolean().default(false),
+
+      // captcha secret
+      secret: z.string().min(1).optional(),
+    })
+    .default({}),
 });

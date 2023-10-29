@@ -1,5 +1,6 @@
 import { formatSession } from '@/db/models/Session';
 import { User, formatUser } from '@/db/models/User';
+import { assertCaptcha } from '@/services/captcha';
 import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
 import { makeSession, makeSessionToken } from '@/services/session';
@@ -13,6 +14,7 @@ const registerSchema = z.object({
     colorB: z.string(),
     icon: z.string(),
   }),
+  captchaToken: z.string().optional(),
 });
 
 export const manageAuthRouter = makeRouter((app) => {
@@ -20,6 +22,8 @@ export const manageAuthRouter = makeRouter((app) => {
     '/auth/register',
     { schema: { body: registerSchema } },
     handle(async ({ em, body, req }) => {
+      await assertCaptcha(body.captchaToken);
+
       const user = new User();
       user.name = body.name;
       user.profile = body.profile;
