@@ -5,6 +5,7 @@ import { sessionsRouter } from '@/routes/sessions';
 import { userBookmarkRouter } from '@/routes/users/bookmark';
 import { userDeleteRouter } from '@/routes/users/delete';
 import { userEditRouter } from '@/routes/users/edit';
+import { userGetRouter } from '@/routes/users/get';
 import { userProgressRouter } from '@/routes/users/progress';
 import { userSessionsRouter } from '@/routes/users/sessions';
 import { userSettingsRouter } from '@/routes/users/settings';
@@ -21,4 +22,5 @@ export async function setupRoutes(app: FastifyInstance) {
   await app.register(userProgressRouter.register);
   await app.register(userBookmarkRouter.register);
   await app.register(userSettingsRouter.register);
+  await app.register(userGetRouter.register);
 }
