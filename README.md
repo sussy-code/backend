@@ -29,7 +29,7 @@ Backend for movie-web
  - [X] catpcha support
  - [X] global namespacing (accounts are stored on a namespace)
  - [ ] cleanup jobs
-  - [ ] cleanup expired sessions
+  - [X] cleanup expired sessions
   - [ ] cleanup old provider metrics
 
 ## Second todo list
