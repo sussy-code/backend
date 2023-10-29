@@ -1,5 +1,8 @@
+import { Bookmark } from '@/db/models/Bookmark';
+import { ProgressItem } from '@/db/models/ProgressItem';
 import { Session } from '@/db/models/Session';
 import { User } from '@/db/models/User';
+import { UserSettings } from '@/db/models/UserSettings';
 import { StatusError } from '@/services/error';
 import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
@@ -24,10 +27,34 @@ export const userDeleteRouter = makeRouter((app) => {
       if (auth.user.id !== user.id)
         throw new StatusError('Cannot delete user other than yourself', 403);
 
-      const sessions = await em.find(Session, { user: user.id });
+      // delete data
+      await em
+        .createQueryBuilder(Bookmark)
+        .delete()
+        .where({
+          userId: user.id,
+        })
+        .execute();
+      await em
+        .createQueryBuilder(ProgressItem)
+        .delete()
+        .where({
+          userId: user.id,
+        })
+        .execute();
+      await em
+        .createQueryBuilder(UserSettings)
+        .delete()
+        .where({
+          id: user.id,
+        })
+        .execute();
 
+      // delete account & login sessions
+      const sessions = await em.find(Session, { user: user.id });
       await em.remove([user, ...sessions]);
       await em.flush();
+
       return {
         id: user.id,
       };

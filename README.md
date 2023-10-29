@@ -19,7 +19,7 @@ Backend for movie-web
   - [X] GET progress items
   - [X] DELETE progress items
   - [ ] consume provider metrics
-  - [ ] DELETE user - should delete all associated data
+  - [X] DELETE user - should delete all associated data
  - [ ] prometheus metrics
   - [X] requests
   - [X] user count
@@ -30,7 +30,7 @@ Backend for movie-web
  - [X] global namespacing (accounts are stored on a namespace)
  - [ ] cleanup jobs
   - [ ] cleanup expired sessions
-  - [ ] cleanup old metrics
+  - [ ] cleanup old provider metrics
 
 ## Second todo list
  - [ ] think of privacy centric method of auth
