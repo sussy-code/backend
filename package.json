@@ -42,6 +42,7 @@
     "fastify-type-provider-zod": "^1.1.9",
     "jsonwebtoken": "^9.0.2",
     "neat-config": "^2.0.0",
+    "prom-client": "^15.0.0",
     "type-fest": "^4.2.0",
     "winston": "^3.10.0",
     "winston-console-format": "^1.0.8",
