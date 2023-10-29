@@ -7,6 +7,7 @@ import { makeSession, makeSessionToken } from '@/services/session';
 import { z } from 'zod';
 
 const registerSchema = z.object({
+  namespace: z.string().min(1),
   name: z.string().max(500).min(1),
   device: z.string().max(500).min(1),
   profile: z.object({
@@ -25,6 +26,7 @@ export const manageAuthRouter = makeRouter((app) => {
       await assertCaptcha(body.captchaToken);
 
       const user = new User();
+      user.namespace = body.namespace;
       user.name = body.name;
       user.profile = body.profile;
 

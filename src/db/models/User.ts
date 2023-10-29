@@ -12,6 +12,9 @@ export class User {
   @PrimaryKey({ name: 'id', type: 'uuid' })
   id: string = randomUUID();
 
+  @Property({ name: 'namespace' })
+  namespace!: string;
+
   @Property({ type: 'date' })
   createdAt: Date = new Date();
 
@@ -30,6 +33,7 @@ export class User {
 
 export interface UserDTO {
   id: string;
+  namespace: string;
   name: string;
   roles: string[];
   createdAt: string;
@@ -43,6 +47,7 @@ export interface UserDTO {
 export function formatUser(user: User): UserDTO {
   return {
     id: user.id,
+    namespace: user.namespace,
     name: user.name,
     roles: user.roles,
     createdAt: user.createdAt.toISOString(),
