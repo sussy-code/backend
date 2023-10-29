@@ -21,8 +21,8 @@ Backend for movie-web
   - [ ] consume provider metrics
   - [ ] DELETE user - should delete all associated data
  - [ ] prometheus metrics
-  - [ ] requests
-  - [ ] user count
+  - [X] requests
+  - [X] user count
   - [ ] provider metrics
  - [ ] ratelimits (stored in redis)
  - [X] switch to pnpm

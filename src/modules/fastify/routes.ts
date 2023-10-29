@@ -9,11 +9,8 @@ import { userProgressRouter } from '@/routes/users/progress';
 import { userSessionsRouter } from '@/routes/users/sessions';
 import { userSettingsRouter } from '@/routes/users/settings';
 import { FastifyInstance } from 'fastify';
-import metricsPlugin from 'fastify-metrics';
 
 export async function setupRoutes(app: FastifyInstance) {
-  await app.register(metricsPlugin, { endpoint: '/metrics' });
-
   await app.register(manageAuthRouter.register);
   await app.register(loginAuthRouter.register);
   await app.register(userSessionsRouter.register);

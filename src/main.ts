@@ -1,4 +1,5 @@
-import { setupFastify } from '@/modules/fastify';
+import { setupFastify, startFastify } from '@/modules/fastify';
+import { setupMetrics } from '@/modules/metrics';
 import { setupMikroORM } from '@/modules/mikro';
 import { scopedLogger } from '@/services/logger';
 
@@ -9,8 +10,11 @@ async function bootstrap(): Promise<void> {
     evt: 'setup',
   });
 
+  const app = await setupFastify();
   await setupMikroORM();
-  await setupFastify();
+  await setupMetrics(app);
+
+  await startFastify(app);
 
   log.info(`App setup, ready to accept connections`, {
     evt: 'success',

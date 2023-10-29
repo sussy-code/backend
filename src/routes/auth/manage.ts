@@ -1,5 +1,6 @@
 import { formatSession } from '@/db/models/Session';
 import { User, formatUser } from '@/db/models/User';
+import { getMetrics } from '@/modules/metrics';
 import { assertCaptcha } from '@/services/captcha';
 import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
@@ -37,6 +38,7 @@ export const manageAuthRouter = makeRouter((app) => {
       );
 
       await em.persistAndFlush([user, session]);
+      getMetrics().user.inc({ namespace: body.namespace }, 1);
 
       return {
         user: formatUser(user),

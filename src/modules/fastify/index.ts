@@ -72,9 +72,14 @@ export async function setupFastify(): Promise<FastifyInstance> {
     },
   );
 
+  if (!exportedApp) throw new Error('no app to export in fastify');
+  return exportedApp;
+}
+
+export function startFastify(app: FastifyInstance) {
   // listen to port
   log.info(`listening to port`, { evt: 'setup-listen' });
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
     app.listen(
       {
         port: conf.server.port,
@@ -91,7 +96,7 @@ export async function setupFastify(): Promise<FastifyInstance> {
         log.info(`fastify setup successfully`, {
           evt: 'setup-success',
         });
-        resolve(exportedApp as FastifyInstance);
+        resolve();
       },
     );
   });
