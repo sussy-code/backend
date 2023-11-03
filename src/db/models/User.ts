@@ -1,5 +1,5 @@
-import { Entity, PrimaryKey, Property, types } from '@mikro-orm/core';
-import { randomUUID } from 'crypto';
+import { Entity, Index, PrimaryKey, Property, types } from '@mikro-orm/core';
+import { nanoid } from 'nanoid';
 
 export type UserProfile = {
   colorA: string;
@@ -9,17 +9,18 @@ export type UserProfile = {
 
 @Entity({ tableName: 'users' })
 export class User {
-  @PrimaryKey({ name: 'id', type: 'uuid' })
-  id: string = randomUUID();
+  @PrimaryKey({ name: 'id', type: 'text' })
+  id: string = nanoid(12);
+
+  @Property({ name: 'public_key', type: 'text' })
+  @Index()
+  publicKey!: string;
 
   @Property({ name: 'namespace' })
   namespace!: string;
 
   @Property({ type: 'date' })
   createdAt: Date = new Date();
-
-  @Property({ type: 'text' })
-  name!: string;
 
   @Property({ name: 'permissions', type: types.array })
   roles: string[] = [];
@@ -34,7 +35,7 @@ export class User {
 export interface UserDTO {
   id: string;
   namespace: string;
-  name: string;
+  publicKey: string;
   roles: string[];
   createdAt: string;
   profile: {
@@ -48,7 +49,7 @@ export function formatUser(user: User): UserDTO {
   return {
     id: user.id,
     namespace: user.namespace,
-    name: user.name,
+    publicKey: user.publicKey,
     roles: user.roles,
     createdAt: user.createdAt.toISOString(),
     profile: {

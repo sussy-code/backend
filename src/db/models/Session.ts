@@ -6,7 +6,7 @@ export class Session {
   @PrimaryKey({ name: 'id', type: 'uuid' })
   id: string = randomUUID();
 
-  @Property({ name: 'user', type: 'uuid' })
+  @Property({ name: 'user', type: 'text' })
   user!: string;
 
   @Property({ type: 'date' })

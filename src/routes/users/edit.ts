@@ -33,7 +33,6 @@ export const userEditRouter = makeRouter((app) => {
       if (auth.user.id !== user.id)
         throw new StatusError('Cannot modify user other than yourself', 403);
 
-      if (body.name) user.name = body.name;
       if (body.profile) user.profile = body.profile;
 
       await em.persistAndFlush(user);
