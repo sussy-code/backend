@@ -1,4 +1,4 @@
-import { ChallengeCode, formatChallengeCode } from '@/db/models/ChallengeCode';
+import { ChallengeCode } from '@/db/models/ChallengeCode';
 import { formatSession } from '@/db/models/Session';
 import { User, formatUser } from '@/db/models/User';
 import { getMetrics } from '@/modules/metrics';
@@ -7,10 +7,7 @@ import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
 import { makeSession, makeSessionToken } from '@/services/session';
 import { z } from 'zod';
-import { nanoid } from 'nanoid';
-import forge from 'node-forge';
-import { StatusError } from '@/services/error';
-import { t } from '@mikro-orm/core';
+import { assertChallengeCode } from '@/services/challenge';
 
 const startSchema = z.object({
   captchaToken: z.string().optional(),
@@ -54,32 +51,12 @@ export const manageAuthRouter = makeRouter((app) => {
     '/auth/register/complete',
     { schema: { body: completeSchema } },
     handle(async ({ em, body, req }) => {
-      const now = Date.now();
-
-      const challenge = await em.findOne(ChallengeCode, {
-        code: body.challenge.code,
-      });
-
-      if (!challenge) throw new StatusError('Challenge Code Invalid', 401);
-
-      if (challenge.expiresAt.getTime() <= now)
-        throw new StatusError('Challenge Code Expired', 401);
-
-      const verifiedChallenge = forge.pki.ed25519.verify({
-        publicKey: new forge.util.ByteStringBuffer(
-          Buffer.from(body.publicKey, 'base64url'),
-        ),
-        encoding: 'utf8',
-        signature: new forge.util.ByteStringBuffer(
-          Buffer.from(body.challenge.signature, 'base64url'),
-        ),
-        message: body.challenge.code,
-      });
-
-      if (!verifiedChallenge)
-        throw new StatusError('Challenge Code Signature Invalid', 401);
-
-      em.remove(challenge);
+      await assertChallengeCode(
+        em,
+        body.challenge.code,
+        body.publicKey,
+        body.challenge.signature,
+      );
 
       const user = new User();
       user.namespace = body.namespace;
