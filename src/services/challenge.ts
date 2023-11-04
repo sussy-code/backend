@@ -1,4 +1,8 @@
-import { ChallengeCode } from '@/db/models/ChallengeCode';
+import {
+  ChallengeCode,
+  ChallengeFlow,
+  ChallengeType,
+} from '@/db/models/ChallengeCode';
 import { StatusError } from '@/services/error';
 import { EntityManager } from '@mikro-orm/core';
 import forge from 'node-forge';
@@ -28,19 +32,23 @@ export async function assertChallengeCode(
   if (challenge.expiresAt.getTime() <= now)
     throw new StatusError('Challenge Code Expired', 401);
 
-  const verifiedChallenge = forge.pki.ed25519.verify({
-    publicKey: new forge.util.ByteStringBuffer(
-      Buffer.from(publicKey, 'base64url'),
-    ),
-    encoding: 'utf8',
-    signature: new forge.util.ByteStringBuffer(
-      Buffer.from(signature, 'base64url'),
-    ),
-    message: code,
-  });
+  try {
+    const verifiedChallenge = forge.pki.ed25519.verify({
+      publicKey: new forge.util.ByteStringBuffer(
+        Buffer.from(publicKey, 'base64url'),
+      ),
+      encoding: 'utf8',
+      signature: new forge.util.ByteStringBuffer(
+        Buffer.from(signature, 'base64url'),
+      ),
+      message: code,
+    });
 
-  if (!verifiedChallenge)
+    if (!verifiedChallenge)
+      throw new StatusError('Challenge Code Signature Invalid', 401);
+
+    em.remove(challenge);
+  } catch (e) {
     throw new StatusError('Challenge Code Signature Invalid', 401);
-
-  em.remove(challenge);
+  }
 }
