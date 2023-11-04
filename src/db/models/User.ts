@@ -1,11 +1,4 @@
-import {
-  Entity,
-  Index,
-  PrimaryKey,
-  Property,
-  Unique,
-  types,
-} from '@mikro-orm/core';
+import { Entity, PrimaryKey, Property, Unique, types } from '@mikro-orm/core';
 import { nanoid } from 'nanoid';
 
 export type UserProfile = {
