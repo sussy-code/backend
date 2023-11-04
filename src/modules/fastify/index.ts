@@ -17,6 +17,7 @@ export async function setupFastify(): Promise<FastifyInstance> {
   // create server
   const app = Fastify({
     logger: makeFastifyLogger(log) as any,
+    trustProxy: conf.server.trustProxy,
   });
   let exportedApp: FastifyInstance | null = null;
 
