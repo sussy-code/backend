@@ -16,6 +16,7 @@ export async function updateMetrics(em: EntityManager, metrics: Metrics) {
     >();
 
   metrics.user.reset();
+
   users.forEach((v) => {
     metrics?.user.inc({ namespace: v.namespace }, Number(v.count));
   });
