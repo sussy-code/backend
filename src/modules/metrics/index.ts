@@ -9,6 +9,15 @@ const log = scopedLogger('metrics');
 
 export type Metrics = {
   user: Counter<'namespace'>;
+  providerMetrics: Counter<
+    | 'title'
+    | 'tmdb_id'
+    | 'season_id'
+    | 'episode_id'
+    | 'status'
+    | 'type'
+    | 'provider_id'
+  >;
 };
 
 let metrics: null | Metrics = null;
@@ -29,7 +38,25 @@ export async function setupMetrics(app: FastifyInstance) {
       help: 'user_help',
       labelNames: ['namespace'],
     }),
+    providerMetrics: new Counter({
+      name: 'provider_metrics',
+      help: 'provider_metrics',
+      labelNames: [
+        'episode_id',
+        'provider_id',
+        'season_id',
+        'status',
+        'title',
+        'tmdb_id',
+        'type',
+      ],
+    }),
   };
+
+  const promClient = app.metrics.client;
+
+  promClient.register.registerMetric(metrics.user);
+  promClient.register.registerMetric(metrics.providerMetrics);
 
   const orm = getORM();
   const em = orm.em.fork();

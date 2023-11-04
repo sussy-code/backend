@@ -2,6 +2,7 @@ import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
 import { z } from 'zod';
 import { ProviderMetric, status } from '@/db/models/ProviderMetrics';
+import { getMetrics } from '@/modules/metrics';
 
 const metricsProviderSchema = z.object({
   tmdbId: z.string(),
@@ -45,6 +46,19 @@ export const metricsRouter = makeRouter((app) => {
         });
         return metric;
       });
+
+      entities.forEach((entity) => {
+        getMetrics().providerMetrics.inc({
+          episode_id: entity.episodeId,
+          provider_id: entity.providerId,
+          season_id: entity.seasonId,
+          status: entity.status,
+          title: entity.title,
+          tmdb_id: entity.tmdbId,
+          type: entity.type,
+        });
+      });
+
       await em.persistAndFlush(entities);
       return true;
     }),
