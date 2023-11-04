@@ -20,9 +20,11 @@ const wait = (sec: number) =>
  * @param cron crontime in this order: (min of hour) (hour of day) (day of month) (day of week) (sec of month)
  */
 export function job(
+  name: string,
   cron: string,
   cb: (ctx: { em: EntityManager; log: Logger }) => Promise<void>,
 ): CronJob {
+  log.info(`Registering job '${name}' with cron '${cron}'`);
   return CronJob.from({
     cronTime: cron,
     onTick: async () => {
@@ -33,9 +35,10 @@ export function job(
       // actually run the job
       try {
         const em = getORM().em.fork();
+        log.info(`Starting job '${name}' with cron '${cron}'`);
         await cb({ em, log });
       } catch (err) {
-        log.error('Failed to run job!');
+        log.error(`Failed to run '${name}' job!`);
         log.error(err);
       }
     },
