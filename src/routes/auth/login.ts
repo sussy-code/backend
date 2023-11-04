@@ -25,7 +25,13 @@ export const loginAuthRouter = makeRouter((app) => {
   app.post(
     '/auth/login/start',
     { schema: { body: startSchema } },
-    handle(async ({ em, body }) => {
+    handle(async ({ em, body, limiter, req }) => {
+      await limiter?.assertAndBump(req, {
+        id: 'login_challenge_tokens',
+        max: 20,
+        window: '10m',
+      });
+
       const user = await em.findOne(User, { publicKey: body.publicKey });
 
       if (user == null) {
@@ -46,7 +52,13 @@ export const loginAuthRouter = makeRouter((app) => {
     app.post(
       '/auth/login/complete',
       { schema: { body: completeSchema } },
-      handle(async ({ em, body, req }) => {
+      handle(async ({ em, body, req, limiter }) => {
+        await limiter?.assertAndBump(req, {
+          id: 'login_complete',
+          max: 20,
+          window: '10m',
+        });
+
         await assertChallengeCode(
           em,
           body.challenge.code,

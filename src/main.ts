@@ -2,6 +2,7 @@ import { setupFastify, startFastify } from '@/modules/fastify';
 import { setupJobs } from '@/modules/jobs';
 import { setupMetrics } from '@/modules/metrics';
 import { setupMikroORM } from '@/modules/mikro';
+import { setupRatelimits } from '@/modules/ratelimits';
 import { scopedLogger } from '@/services/logger';
 
 const log = scopedLogger('mw-backend');
@@ -11,6 +12,7 @@ async function bootstrap(): Promise<void> {
     evt: 'setup',
   });
 
+  await setupRatelimits();
   const app = await setupFastify();
   await setupMikroORM();
   await setupMetrics(app);

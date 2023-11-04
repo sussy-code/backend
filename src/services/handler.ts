@@ -1,4 +1,6 @@
 import { getORM } from '@/modules/mikro';
+import { getLimiter } from '@/modules/ratelimits';
+import { Limiter } from '@/modules/ratelimits/limiter';
 import { makeAuthContext } from '@/services/auth';
 import { EntityManager } from '@mikro-orm/postgresql';
 import {
@@ -74,6 +76,7 @@ export type RequestContext<
     Logger
   >['query'];
   em: EntityManager;
+  limiter: Limiter | null;
   auth: ReturnType<typeof makeAuthContext>;
 };
 
@@ -124,6 +127,7 @@ export function handle<
         query: req.query,
         em,
         auth: makeAuthContext(em, req),
+        limiter: getLimiter(),
       }),
     );
   };

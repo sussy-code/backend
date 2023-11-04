@@ -32,7 +32,7 @@ Backend for movie-web
  - [x] provider metrics
   - [x] cleanup old metrics in DB
   - [x] endpoint to consume and store metrics
-  - [ ] pass metrics to prometheus
+  - [x] pass metrics to prometheus
 
 ## Second todo list
  - [X] think of privacy centric method of auth

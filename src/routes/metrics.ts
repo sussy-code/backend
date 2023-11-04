@@ -29,7 +29,14 @@ export const metricsRouter = makeRouter((app) => {
         body: metricsProviderInputSchema,
       },
     },
-    handle(async ({ em, body }) => {
+    handle(async ({ em, body, req, limiter }) => {
+      await limiter?.assertAndBump(req, {
+        id: 'provider_metrics',
+        max: 300,
+        inc: body.items.length,
+        window: '30m',
+      });
+
       const entities = body.items.map((v) => {
         const metric = new ProviderMetric();
         em.assign(metric, {

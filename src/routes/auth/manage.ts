@@ -32,7 +32,12 @@ export const manageAuthRouter = makeRouter((app) => {
   app.post(
     '/auth/register/start',
     { schema: { body: startSchema } },
-    handle(async ({ em, body }) => {
+    handle(async ({ em, body, limiter, req }) => {
+      await limiter?.assertAndBump(req, {
+        id: 'register_challenge_tokens',
+        max: 10,
+        window: '10m',
+      });
       await assertCaptcha(body.captchaToken);
 
       const challenge = new ChallengeCode();
@@ -50,7 +55,13 @@ export const manageAuthRouter = makeRouter((app) => {
   app.post(
     '/auth/register/complete',
     { schema: { body: completeSchema } },
-    handle(async ({ em, body, req }) => {
+    handle(async ({ em, body, req, limiter }) => {
+      await limiter?.assertAndBump(req, {
+        id: 'register_complete',
+        max: 10,
+        window: '10m',
+      });
+
       await assertChallengeCode(
         em,
         body.challenge.code,

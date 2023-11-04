@@ -59,4 +59,11 @@ export const configSchema = z.object({
       clientKey: z.string().min(1).optional(),
     })
     .default({}),
+  ratelimits: z
+    .object({
+      // enabled captchas on register
+      enabled: z.coerce.boolean().default(false),
+      redisUrl: z.string().optional(),
+    })
+    .default({}),
 });
