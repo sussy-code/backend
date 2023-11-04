@@ -64,11 +64,14 @@ export const manageAuthRouter = makeRouter((app) => {
       user.namespace = body.namespace;
       user.publicKey = body.publicKey;
       user.profile = body.profile;
+      user.lastLoggedIn = new Date();
+
       const session = makeSession(
         user.id,
         body.device,
         req.headers['user-agent'],
       );
+
       await em.persistAndFlush([user, session]);
       getMetrics().user.inc({ namespace: body.namespace }, 1);
       return {

@@ -62,13 +62,15 @@ export const loginAuthRouter = makeRouter((app) => {
           throw new StatusError('User cannot be found', 401);
         }
 
+        user.lastLoggedIn = new Date();
+
         const session = makeSession(
           user.id,
           body.device,
           req.headers['user-agent'],
         );
 
-        await em.persistAndFlush(session);
+        await em.persistAndFlush([session, user]);
 
         return {
           session: formatSession(session),

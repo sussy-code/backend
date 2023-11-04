@@ -22,6 +22,9 @@ export class User {
   @Property({ type: 'date' })
   createdAt: Date = new Date();
 
+  @Property({ type: 'date', nullable: true })
+  lastLoggedIn?: Date;
+
   @Property({ name: 'permissions', type: types.array })
   roles: string[] = [];
 
