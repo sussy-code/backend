@@ -8,6 +8,8 @@ export async function assertChallengeCode(
   code: string,
   publicKey: string,
   signature: string,
+  validFlow: ChallengeFlow,
+  validType: ChallengeType,
 ) {
   const now = Date.now();
 
@@ -15,7 +17,13 @@ export async function assertChallengeCode(
     code,
   });
 
-  if (!challenge) throw new StatusError('Challenge Code Invalid', 401);
+  if (
+    !challenge ||
+    challenge.flow !== validFlow ||
+    challenge.authType !== validType
+  ) {
+    throw new StatusError('Challenge Code Invalid', 401);
+  }
 
   if (challenge.expiresAt.getTime() <= now)
     throw new StatusError('Challenge Code Expired', 401);

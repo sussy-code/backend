@@ -37,7 +37,7 @@ export const manageAuthRouter = makeRouter((app) => {
 
       const challenge = new ChallengeCode();
       challenge.authType = 'mnemonic';
-      challenge.stage = 'registration';
+      challenge.flow = 'registration';
 
       await em.persistAndFlush(challenge);
 
@@ -56,6 +56,8 @@ export const manageAuthRouter = makeRouter((app) => {
         body.challenge.code,
         body.publicKey,
         body.challenge.signature,
+        'registration',
+        'mnemonic',
       );
 
       const user = new User();

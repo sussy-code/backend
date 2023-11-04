@@ -4,16 +4,20 @@ import { randomUUID } from 'crypto';
 // 30 seconds
 const CHALLENGE_EXPIRY_MS = 3000000 * 1000;
 
+export type ChallengeFlow = 'registration' | 'login';
+
+export type ChallengeType = 'mnemonic';
+
 @Entity({ tableName: 'challenge_codes' })
 export class ChallengeCode {
   @PrimaryKey({ name: 'code', type: 'uuid' })
   code: string = randomUUID();
 
-  @Property({ name: 'stage', type: 'text' })
-  stage!: 'registration' | 'login';
+  @Property({ name: 'flow', type: 'text' })
+  flow!: ChallengeFlow;
 
   @Property({ name: 'auth_type' })
-  authType!: 'mnemonic';
+  authType!: ChallengeType;
 
   @Property({ type: 'date' })
   createdAt: Date = new Date();
@@ -24,7 +28,7 @@ export class ChallengeCode {
 
 export interface ChallengeCodeDTO {
   code: string;
-  stage: string;
+  flow: string;
   authType: string;
   createdAt: string;
   expiresAt: string;
@@ -35,7 +39,7 @@ export function formatChallengeCode(
 ): ChallengeCodeDTO {
   return {
     code: challenge.code,
-    stage: challenge.stage,
+    flow: challenge.flow,
     authType: challenge.authType,
     createdAt: challenge.createdAt.toISOString(),
     expiresAt: challenge.expiresAt.toISOString(),
