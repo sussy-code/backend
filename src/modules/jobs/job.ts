@@ -2,6 +2,7 @@ import { getORM } from '@/modules/mikro';
 import { scopedLogger } from '@/services/logger';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { CronJob } from 'cron';
+import { Logger } from 'winston';
 
 const minOffset = 0;
 const maxOffset = 60 * 4;
@@ -20,7 +21,7 @@ const wait = (sec: number) =>
  */
 export function job(
   cron: string,
-  cb: (ctx: { em: EntityManager }) => Promise<void>,
+  cb: (ctx: { em: EntityManager; log: Logger }) => Promise<void>,
 ): CronJob {
   return CronJob.from({
     cronTime: cron,
@@ -32,7 +33,7 @@ export function job(
       // actually run the job
       try {
         const em = getORM().em.fork();
-        await cb({ em });
+        await cb({ em, log });
       } catch (err) {
         log.error('Failed to run job!');
         log.error(err);
