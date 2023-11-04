@@ -1,5 +1,4 @@
 import { Session } from '@/db/models/Session';
-import { User } from '@/db/models/User';
 import { job } from '@/modules/jobs/job';
 
 // every day at 12:00:00

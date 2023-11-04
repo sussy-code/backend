@@ -1,4 +1,8 @@
-import { setupFastify, startFastify } from '@/modules/fastify';
+import {
+  setupFastify,
+  setupFastifyRoutes,
+  startFastify,
+} from '@/modules/fastify';
 import { setupJobs } from '@/modules/jobs';
 import { setupMetrics } from '@/modules/metrics';
 import { setupMikroORM } from '@/modules/mikro';
@@ -18,6 +22,7 @@ async function bootstrap(): Promise<void> {
   await setupMetrics(app);
   await setupJobs();
 
+  await setupFastifyRoutes(app);
   await startFastify(app);
 
   log.info(`App setup, ready to accept connections`, {

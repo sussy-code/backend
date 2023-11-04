@@ -19,7 +19,6 @@ export async function setupFastify(): Promise<FastifyInstance> {
     logger: makeFastifyLogger(log) as any,
     trustProxy: conf.server.trustProxy,
   });
-  let exportedApp: FastifyInstance | null = null;
 
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
@@ -55,26 +54,14 @@ export async function setupFastify(): Promise<FastifyInstance> {
     });
   });
 
-  // plugins & routes
-  log.info(`setting up plugins and routes`, { evt: 'setup-plugins' });
+  // plugins
+  log.info(`setting up plugins`, { evt: 'setup-plugins' });
   await app.register(cors, {
     origin: conf.server.cors.split(' ').filter((v) => v.length > 0),
     credentials: true,
   });
-  await app.register(
-    async (api, opts, done) => {
-      setupRoutes(api);
 
-      exportedApp = api;
-      done();
-    },
-    {
-      prefix: conf.server.basePath,
-    },
-  );
-
-  if (!exportedApp) throw new Error('no app to export in fastify');
-  return exportedApp;
+  return app;
 }
 
 export function startFastify(app: FastifyInstance) {
@@ -101,4 +88,17 @@ export function startFastify(app: FastifyInstance) {
       },
     );
   });
+}
+
+export async function setupFastifyRoutes(app: FastifyInstance) {
+  log.info(`setting up routes`, { evt: 'setup-plugins' });
+  await app.register(
+    async (api, opts, done) => {
+      setupRoutes(api);
+      done();
+    },
+    {
+      prefix: conf.server.basePath,
+    },
+  );
 }

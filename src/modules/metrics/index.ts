@@ -17,6 +17,7 @@ export type Metrics = {
     | 'status'
     | 'type'
     | 'provider_id'
+    | 'embed_id'
   >;
 };
 
@@ -30,7 +31,13 @@ export function getMetrics() {
 export async function setupMetrics(app: FastifyInstance) {
   log.info(`Setting up metrics...`, { evt: 'start' });
 
-  await app.register(metricsPlugin, { endpoint: '/metrics' });
+  await app.register(metricsPlugin, {
+    endpoint: '/metrics',
+    routeMetrics: {
+      enabled: true,
+      registeredRoutesOnly: true,
+    },
+  });
 
   metrics = {
     user: new Counter({
@@ -49,6 +56,7 @@ export async function setupMetrics(app: FastifyInstance) {
         'title',
         'tmdb_id',
         'type',
+        'embed_id',
       ],
     }),
   };
