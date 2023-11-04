@@ -10,7 +10,7 @@ export const bookmarkMetaSchema = z.object({
 
 export type BookmarkMeta = z.infer<typeof bookmarkMetaSchema>;
 
-@Entity({ tableName: 'bookmark' })
+@Entity({ tableName: 'bookmarks' })
 @Unique({ properties: ['tmdbId', 'userId'] })
 export class Bookmark {
   @PrimaryKey({ name: 'tmdb_id' })

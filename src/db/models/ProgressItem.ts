@@ -11,7 +11,7 @@ export const progressMetaSchema = z.object({
 
 export type ProgressMeta = z.infer<typeof progressMetaSchema>;
 
-@Entity({ tableName: 'progress_item' })
+@Entity({ tableName: 'progress_items' })
 @Unique({ properties: ['tmdbId', 'userId', 'seasonId', 'episodeId'] })
 export class ProgressItem {
   @PrimaryKey({ name: 'id', type: 'uuid' })
