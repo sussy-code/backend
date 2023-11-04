@@ -1,4 +1,11 @@
-import { Entity, Index, PrimaryKey, Property, types } from '@mikro-orm/core';
+import {
+  Entity,
+  Index,
+  PrimaryKey,
+  Property,
+  Unique,
+  types,
+} from '@mikro-orm/core';
 import { nanoid } from 'nanoid';
 
 export type UserProfile = {
@@ -13,7 +20,7 @@ export class User {
   id: string = nanoid(12);
 
   @Property({ name: 'public_key', type: 'text' })
-  @Index()
+  @Unique()
   publicKey!: string;
 
   @Property({ name: 'namespace' })
