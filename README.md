@@ -29,12 +29,12 @@ Backend for movie-web
  - [X] cleanup jobs
   - [X] cleanup expired sessions
  - [ ] ratelimits (stored in redis)
- - [ ] provider metrics
-  - [ ] cleanup old metrics in DB
-  - [ ] endpoint to consume and store metrics
+ - [x] provider metrics
+  - [x] cleanup old metrics in DB
+  - [x] endpoint to consume and store metrics
   - [ ] pass metrics to prometheus
 
 ## Second todo list
- - [ ] think of privacy centric method of auth
-  - [ ] Register
-  - [ ] Login
+ - [X] think of privacy centric method of auth
+  - [X] Register
+  - [X] Login
