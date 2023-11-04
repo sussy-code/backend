@@ -54,11 +54,12 @@ function createWinstonLogger() {
   return loggerObj;
 }
 
-export function scopedLogger(service: string) {
+export function scopedLogger(service: string, meta: object = {}) {
   const logger = createWinstonLogger();
   logger.defaultMeta = {
     ...logger.defaultMeta,
     svc: service,
+    ...meta,
   };
   return logger;
 }

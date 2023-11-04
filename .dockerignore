@@ -4,3 +4,5 @@ config.json
 dist
 .git
 .vscode
+.docker
+.pnpm-store

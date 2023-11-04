@@ -1,4 +1,12 @@
-import { setupFastify } from '@/modules/fastify';
+import {
+  setupFastify,
+  setupFastifyRoutes,
+  startFastify,
+} from '@/modules/fastify';
+import { setupJobs } from '@/modules/jobs';
+import { setupMetrics } from '@/modules/metrics';
+import { setupMikroORM } from '@/modules/mikro';
+import { setupRatelimits } from '@/modules/ratelimits';
 import { scopedLogger } from '@/services/logger';
 
 const log = scopedLogger('mw-backend');
@@ -8,7 +16,14 @@ async function bootstrap(): Promise<void> {
     evt: 'setup',
   });
 
-  await setupFastify();
+  await setupRatelimits();
+  const app = await setupFastify();
+  await setupMikroORM();
+  await setupMetrics(app);
+  await setupJobs();
+
+  await setupFastifyRoutes(app);
+  await startFastify(app);
 
   log.info(`App setup, ready to accept connections`, {
     evt: 'success',

@@ -1,0 +1,47 @@
+version: '3.8'
+
+name: "mw_backend"
+
+services:
+  # required services
+  postgres:
+    image: postgres
+    ports:
+     - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+     - 'postgres_data:/var/lib/postgresql/data'
+
+  # custom services
+  backend:
+    stdin_open: true
+    tty: true
+    build:
+      dockerfile: ./dev.Dockerfile
+      context: ../../
+    volumes:
+      - '../../:/app'
+    env_file:
+      - './config.env'
+    ports:
+      - '8081:8080'
+    depends_on:
+      - postgres
+    environment:
+      - WAIT_HOSTS=postgres:5432
+
+  # util services
+  pgweb:
+    image: sosedoff/pgweb
+    ports: 
+      - "8082:8081"
+    links: 
+      - postgres:postgres
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
