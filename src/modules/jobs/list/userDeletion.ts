@@ -4,7 +4,7 @@ import { job } from '@/modules/jobs/job';
 
 // every day at 12:00:00
 export const userDeletionJob = job(
-  'User Deletion',
+  'user-deletion',
   '0 12 * * *',
   async ({ em, log }) => {
     const knex = em.getKnex();

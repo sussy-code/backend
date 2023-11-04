@@ -4,7 +4,7 @@ import { job } from '@/modules/jobs/job';
 
 // every day at 12:00:00
 export const sessionExpiryJob = job(
-  'Session Expiry',
+  'session-expiry',
   '0 12 * * *',
   async ({ em, log }) => {
     const deletedSessions = await em

@@ -9,8 +9,6 @@ const maxOffset = 60 * 4;
 const secondsOffset =
   Math.floor(Math.random() * (maxOffset - minOffset)) + minOffset;
 
-const log = scopedLogger('jobs');
-
 const wait = (sec: number) =>
   new Promise<void>((resolve) => {
     setTimeout(() => resolve(), sec * 1000);
@@ -20,11 +18,12 @@ const wait = (sec: number) =>
  * @param cron crontime in this order: (min of hour) (hour of day) (day of month) (day of week) (sec of month)
  */
 export function job(
-  name: string,
+  id: string,
   cron: string,
   cb: (ctx: { em: EntityManager; log: Logger }) => Promise<void>,
 ): CronJob {
-  log.info(`Registering job '${name}' with cron '${cron}'`);
+  const log = scopedLogger('jobs', { jobId: id });
+  log.info(`Registering job '${id}' with cron '${cron}'`);
   return CronJob.from({
     cronTime: cron,
     onTick: async () => {
@@ -35,10 +34,10 @@ export function job(
       // actually run the job
       try {
         const em = getORM().em.fork();
-        log.info(`Starting job '${name}' with cron '${cron}'`);
-        await cb({ em, log });
+        log.info(`Starting job '${id}' with cron '${cron}'`);
+        await cb({ em, log: log });
       } catch (err) {
-        log.error(`Failed to run '${name}' job!`);
+        log.error(`Failed to run '${id}' job!`);
         log.error(err);
       }
     },
