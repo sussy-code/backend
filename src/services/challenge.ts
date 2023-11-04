@@ -7,6 +7,11 @@ import { StatusError } from '@/services/error';
 import { EntityManager } from '@mikro-orm/core';
 import forge from 'node-forge';
 
+const {
+  pki: { ed25519 },
+  util: { ByteStringBuffer },
+} = forge;
+
 export async function assertChallengeCode(
   em: EntityManager,
   code: string,
@@ -33,14 +38,10 @@ export async function assertChallengeCode(
     throw new StatusError('Challenge Code Expired', 401);
 
   try {
-    const verifiedChallenge = forge.pki.ed25519.verify({
-      publicKey: new forge.util.ByteStringBuffer(
-        Buffer.from(publicKey, 'base64url'),
-      ),
+    const verifiedChallenge = ed25519.verify({
+      publicKey: new ByteStringBuffer(Buffer.from(publicKey, 'base64url')),
       encoding: 'utf8',
-      signature: new forge.util.ByteStringBuffer(
-        Buffer.from(signature, 'base64url'),
-      ),
+      signature: new ByteStringBuffer(Buffer.from(signature, 'base64url')),
       message: code,
     });
 
