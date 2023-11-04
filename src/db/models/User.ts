@@ -41,6 +41,7 @@ export interface UserDTO {
   publicKey: string;
   roles: string[];
   createdAt: string;
+  lastLoggedIn?: string;
   profile: {
     colorA: string;
     colorB: string;
@@ -55,6 +56,7 @@ export function formatUser(user: User): UserDTO {
     publicKey: user.publicKey,
     roles: user.roles,
     createdAt: user.createdAt.toISOString(),
+    lastLoggedIn: user.lastLoggedIn?.toISOString(),
     profile: {
       colorA: user.profile.colorA,
       colorB: user.profile.colorB,
