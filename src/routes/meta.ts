@@ -5,13 +5,17 @@ import { makeRouter } from '@/services/router';
 export const metaRouter = makeRouter((app) => {
   app.get(
     '/healthcheck',
-    handle(async ({ em }) => {
+    handle(async ({ em, res }) => {
       const databaseConnected = await em.config
         .getDriver()
         .getConnection()
         .isConnected();
+
+      const healthy = databaseConnected;
+      if (!healthy) res.status(503);
+
       return {
-        healthy: databaseConnected,
+        healthy,
         databaseConnected,
       };
     }),

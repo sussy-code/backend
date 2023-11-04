@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "homepage": "https://github.com/movie-web/backend",
   "engines": {
@@ -15,7 +15,9 @@
     "build:pre": "rimraf dist/",
     "build:compile": "tsc && tsc-alias",
     "preinstall": "npx -y only-allow pnpm",
-    "migration:create": "npx -y mikro-orm migration:create"
+    "migration:create": "npx -y mikro-orm migration:create",
+    "migration:up": "npx -y mikro-orm migration:up",
+    "migration:down": "npx -y mikro-orm migration:down"
   },
   "mikro-orm": {
     "useTsNode": true,
