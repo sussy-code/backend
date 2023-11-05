@@ -1,4 +1,4 @@
+import { ormConf } from '@/config/orm';
 import { makeOrmConfig } from '@/modules/mikro/orm';
-import { conf } from '@/config';
 
-export default makeOrmConfig(conf.postgres.connection);
+export default makeOrmConfig(ormConf.postgres.connection);

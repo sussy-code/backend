@@ -64,6 +64,8 @@ export function scopedLogger(service: string, meta: object = {}) {
   return logger;
 }
 
+const ignoredUrls = ['/healthcheck', '/metrics'];
+
 export function makeFastifyLogger(logger: winston.Logger) {
   logger.format = winston.format.combine(
     winston.format((info) => {
@@ -78,6 +80,9 @@ export function makeFastifyLogger(logger: winston.Logger) {
         let url = request.url;
         try {
           const pathParts = (request.url as string).split('?', 2);
+
+          if (ignoredUrls.includes(pathParts[0])) return false;
+
           if (pathParts[1]) {
             const searchParams = new URLSearchParams(pathParts[1]);
             pathParts[1] = searchParams.toString();
