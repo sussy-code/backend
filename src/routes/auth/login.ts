@@ -1,6 +1,6 @@
 import { ChallengeCode } from '@/db/models/ChallengeCode';
 import { formatSession } from '@/db/models/Session';
-import { User } from '@/db/models/User';
+import { User, formatUser } from '@/db/models/User';
 import { assertChallengeCode } from '@/services/challenge';
 import { StatusError } from '@/services/error';
 import { handle } from '@/services/handler';
@@ -85,6 +85,7 @@ export const loginAuthRouter = makeRouter((app) => {
         await em.persistAndFlush([session, user]);
 
         return {
+          user: formatUser(user),
           session: formatSession(session),
           token: makeSessionToken(session),
         };
