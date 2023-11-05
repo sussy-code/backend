@@ -9,6 +9,10 @@ export const configSchema = z.object({
       // space seperated list of allowed cors domains
       cors: z.string().default(''),
 
+      // disable cross origin restrictions, allow any site.
+      // overwrites the cors option above
+      allowAnySite: z.coerce.boolean().default(false),
+
       // should it trust reverse proxy headers? (for ip gathering)
       trustProxy: z.coerce.boolean().default(false),
 
