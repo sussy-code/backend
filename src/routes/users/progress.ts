@@ -19,10 +19,12 @@ export const userProgressRouter = makeRouter((app) => {
         }),
         body: z.object({
           meta: progressMetaSchema,
-          seasonId: z.string().optional(),
-          episodeId: z.string().optional(),
           duration: z.number(),
           watched: z.number(),
+          seasonId: z.string().optional(),
+          episodeId: z.string().optional(),
+          seasonNumber: z.number().optional(),
+          episodeNumber: z.number().optional(),
         }),
       },
     },
@@ -38,12 +40,15 @@ export const userProgressRouter = makeRouter((app) => {
         episodeId: body.episodeId,
         seasonId: body.seasonId,
       });
+
       if (!progressItem) {
         progressItem = new ProgressItem();
         progressItem.tmdbId = params.tmdbid;
         progressItem.userId = params.uid;
         progressItem.episodeId = body.episodeId;
         progressItem.seasonId = body.seasonId;
+        progressItem.episodeNumber = body.episodeNumber;
+        progressItem.seasonNumber = body.seasonNumber;
       }
 
       em.assign(progressItem, {

@@ -6,7 +6,7 @@ export const progressMetaSchema = z.object({
   title: z.string(),
   year: z.number(),
   poster: z.string().optional(),
-  type: z.string(),
+  type: z.union([z.literal('show'), z.literal('movie')]),
 });
 
 export type ProgressMeta = z.infer<typeof progressMetaSchema>;
@@ -29,6 +29,12 @@ export class ProgressItem {
   @Property({ name: 'episode_id', nullable: true })
   episodeId?: string;
 
+  @Property({ name: 'season_number', nullable: true })
+  seasonNumber?: number;
+
+  @Property({ name: 'episode_number', nullable: true })
+  episodeNumber?: number;
+
   @Property({
     name: 'meta',
     type: types.json,
@@ -48,8 +54,14 @@ export class ProgressItem {
 
 export interface ProgressItemDTO {
   tmdbId: string;
-  seasonId?: string;
-  episodeId?: string;
+  season: {
+    id?: string;
+    number?: number;
+  };
+  episode: {
+    id?: string;
+    number?: number;
+  };
   meta: {
     title: string;
     year: number;
@@ -66,8 +78,14 @@ export function formatProgressItem(
 ): ProgressItemDTO {
   return {
     tmdbId: progressItem.tmdbId,
-    seasonId: progressItem.seasonId,
-    episodeId: progressItem.episodeId,
+    episode: {
+      id: progressItem.episodeId,
+      number: progressItem.episodeNumber,
+    },
+    season: {
+      id: progressItem.seasonId,
+      number: progressItem.seasonNumber,
+    },
     meta: {
       title: progressItem.meta.title,
       year: progressItem.meta.year,
