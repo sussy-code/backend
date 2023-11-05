@@ -56,8 +56,10 @@ export async function setupFastify(): Promise<FastifyInstance> {
 
   // plugins
   log.info(`setting up plugins`, { evt: 'setup-plugins' });
+  const corsDomains = conf.server.cors.split(' ').filter((v) => v.length > 0);
+  const corsSetting = conf.server.allowAnySite ? true : corsDomains;
   await app.register(cors, {
-    origin: conf.server.cors.split(' ').filter((v) => v.length > 0),
+    origin: corsSetting,
     credentials: true,
   });
 

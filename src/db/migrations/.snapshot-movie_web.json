@@ -184,6 +184,24 @@
           "nullable": true,
           "mappedType": "string"
         },
+        "season_number": {
+          "name": "season_number",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "episode_number": {
+          "name": "episode_number",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
         "meta": {
           "name": "meta",
           "type": "jsonb",

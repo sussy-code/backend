@@ -1,4 +1,4 @@
-import { conf } from '@/config';
+import { conf, version } from '@/config';
 import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
 
@@ -26,6 +26,7 @@ export const metaRouter = makeRouter((app) => {
       return {
         name: conf.meta.name,
         description: conf.meta.description,
+        version: version,
         hasCaptcha: conf.captcha.enabled,
         captchaClientKey: conf.captcha.clientKey,
       };
