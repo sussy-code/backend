@@ -37,19 +37,25 @@ export const metricsRouter = makeRouter((app) => {
         window: '30m',
       });
 
+      const hostname = req.headers.origin?.slice(0, 255) ?? 'unknown origin';
+
       const entities = body.items.map((v) => {
+        const errorMessage = v.errorMessage?.slice(0, 200);
+        const truncatedFullError = v.fullError?.slice(0, 2000);
+
         const metric = new ProviderMetric();
         em.assign(metric, {
           providerId: v.providerId,
           embedId: v.embedId,
-          fullError: v.fullError,
-          errorMessage: v.errorMessage,
+          fullError: truncatedFullError,
+          errorMessage: errorMessage,
           episodeId: v.episodeId,
           seasonId: v.seasonId,
           status: v.status,
           title: v.title,
           tmdbId: v.tmdbId,
           type: v.type,
+          hostname,
         });
         return metric;
       });
@@ -63,6 +69,7 @@ export const metricsRouter = makeRouter((app) => {
           title: entity.title,
           tmdb_id: entity.tmdbId,
           type: entity.type,
+          hostname,
         });
       });
 

@@ -40,9 +40,12 @@ export class ProviderMetric {
   @Property({ name: 'embed_id', nullable: true })
   embedId?: string;
 
-  @Property({ name: 'error_message', nullable: true })
+  @Property({ name: 'error_message', nullable: true, type: 'text' })
   errorMessage?: string;
 
-  @Property({ name: 'full_error', nullable: true })
+  @Property({ name: 'full_error', nullable: true, type: 'text' })
   fullError?: string;
+
+  @Property({ name: 'hostname' })
+  hostname!: string;
 }
