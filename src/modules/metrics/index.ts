@@ -18,6 +18,7 @@ export type Metrics = {
     | 'type'
     | 'provider_id'
     | 'embed_id'
+    | 'hostname'
   >;
 };
 
@@ -57,6 +58,7 @@ export async function setupMetrics(app: FastifyInstance) {
         'tmdb_id',
         'type',
         'embed_id',
+        'hostname',
       ],
     }),
   };
