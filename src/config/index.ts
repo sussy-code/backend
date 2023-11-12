@@ -8,7 +8,7 @@ const fragments = {
   dockerdev: dockerFragment,
 };
 
-export const version = '1.0.3';
+export const version = process.env.npm_package_version ?? 'unknown';
 
 export const conf = createConfigLoader()
   .addFromEnvironment('MWB_')
