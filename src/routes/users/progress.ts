@@ -6,7 +6,19 @@ import {
 import { StatusError } from '@/services/error';
 import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
+import { randomUUID } from 'crypto';
 import { z } from 'zod';
+
+const progressItemSchema = z.object({
+  meta: progressMetaSchema,
+  tmdbId: z.string(),
+  duration: z.number(),
+  watched: z.number(),
+  seasonId: z.string().optional(),
+  episodeId: z.string().optional(),
+  seasonNumber: z.number().optional(),
+  episodeNumber: z.number().optional(),
+});
 
 export const userProgressRouter = makeRouter((app) => {
   app.put(
@@ -17,15 +29,7 @@ export const userProgressRouter = makeRouter((app) => {
           uid: z.string(),
           tmdbid: z.string(),
         }),
-        body: z.object({
-          meta: progressMetaSchema,
-          duration: z.number(),
-          watched: z.number(),
-          seasonId: z.string().optional(),
-          episodeId: z.string().optional(),
-          seasonNumber: z.number().optional(),
-          episodeNumber: z.number().optional(),
-        }),
+        body: progressItemSchema,
       },
     },
     handle(async ({ auth, params, body, em }) => {
@@ -60,6 +64,83 @@ export const userProgressRouter = makeRouter((app) => {
 
       await em.persistAndFlush(progressItem);
       return formatProgressItem(progressItem);
+    }),
+  );
+
+  app.put(
+    '/users/:uid/progress/import',
+    {
+      schema: {
+        params: z.object({
+          uid: z.string(),
+        }),
+        body: z.array(progressItemSchema),
+      },
+    },
+    handle(async ({ auth, params, body: newItems, em, req, limiter }) => {
+      await auth.assert();
+
+      if (auth.user.id !== params.uid)
+        throw new StatusError('Cannot modify user other than yourself', 403);
+
+      const existingItems = await em.find(ProgressItem, { userId: params.uid });
+
+      for (const newItem of newItems) {
+        const existingItem = existingItems.find(
+          (item) =>
+            item.tmdbId == newItem.tmdbId &&
+            item.seasonId == newItem.seasonId &&
+            item.episodeId == newItem.episodeId,
+        );
+
+        if (existingItem) {
+          if (existingItem.watched < newItem.watched) {
+            existingItem.updatedAt = new Date();
+            existingItem.watched = newItem.watched;
+          }
+          continue;
+        }
+
+        existingItems.push({
+          id: randomUUID(),
+          duration: newItem.duration,
+          episodeId: newItem.episodeId,
+          episodeNumber: newItem.episodeNumber,
+          meta: newItem.meta,
+          seasonId: newItem.seasonId,
+          seasonNumber: newItem.seasonNumber,
+          tmdbId: newItem.tmdbId,
+          userId: params.uid,
+          watched: newItem.watched,
+          updatedAt: new Date(),
+        });
+      }
+
+      const progressItems = await em.upsertMany(ProgressItem, existingItems);
+
+      await em.flush();
+
+      await limiter?.assertAndBump(req, {
+        id: 'progress_import',
+        max: 5,
+        window: '10m',
+      });
+
+      // Construct a response that only has the items that were requested to be updated in the same order
+      // ! is used on find as the item *should* always exist if the code above works correctly
+      const newItemResponses = newItems
+        .map(
+          (newItem) =>
+            progressItems.find(
+              (item) =>
+                item.tmdbId == newItem.tmdbId &&
+                item.seasonId == newItem.seasonId &&
+                item.episodeId == newItem.episodeId,
+            )!,
+        )
+        .map(formatProgressItem);
+
+      return newItemResponses;
     }),
   );
 
