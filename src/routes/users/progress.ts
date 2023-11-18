@@ -84,6 +84,7 @@ export const userProgressRouter = makeRouter((app) => {
         throw new StatusError('Cannot modify user other than yourself', 403);
 
       const existingItems = await em.find(ProgressItem, { userId: params.uid });
+      const itemsToUpsert: ProgressItem[] = [];
 
       for (const newItem of newItems) {
         const existingItem = existingItems.find(
@@ -98,10 +99,11 @@ export const userProgressRouter = makeRouter((app) => {
             existingItem.updatedAt = new Date();
             existingItem.watched = newItem.watched;
           }
+          itemsToUpsert.push(existingItem);
           continue;
         }
 
-        existingItems.push({
+        itemsToUpsert.push({
           id: randomUUID(),
           duration: newItem.duration,
           episodeId: newItem.episodeId,
@@ -116,7 +118,7 @@ export const userProgressRouter = makeRouter((app) => {
         });
       }
 
-      const progressItems = await em.upsertMany(ProgressItem, existingItems);
+      const progressItems = await em.upsertMany(ProgressItem, itemsToUpsert);
 
       await em.flush();
 
@@ -126,21 +128,7 @@ export const userProgressRouter = makeRouter((app) => {
         window: '10m',
       });
 
-      // Construct a response that only has the items that were requested to be updated in the same order
-      // ! is used on find as the item *should* always exist if the code above works correctly
-      const newItemResponses = newItems
-        .map(
-          (newItem) =>
-            progressItems.find(
-              (item) =>
-                item.tmdbId == newItem.tmdbId &&
-                item.seasonId == newItem.seasonId &&
-                item.episodeId == newItem.episodeId,
-            )!,
-        )
-        .map(formatProgressItem);
-
-      return newItemResponses;
+      return progressItems.map(formatProgressItem);
     }),
   );
 
