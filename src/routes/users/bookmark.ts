@@ -6,7 +6,13 @@ import {
 import { StatusError } from '@/services/error';
 import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
+import { randomUUID } from 'crypto';
 import { z } from 'zod';
+
+const bookmarkDataSchema = z.object({
+  tmdbId: z.string(),
+  meta: bookmarkMetaSchema,
+});
 
 export const userBookmarkRouter = makeRouter((app) => {
   app.get(
@@ -40,9 +46,7 @@ export const userBookmarkRouter = makeRouter((app) => {
           uid: z.string(),
           tmdbid: z.string(),
         }),
-        body: z.object({
-          meta: bookmarkMetaSchema,
-        }),
+        body: bookmarkDataSchema,
       },
     },
     handle(async ({ auth, params, body, em }) => {
@@ -67,6 +71,40 @@ export const userBookmarkRouter = makeRouter((app) => {
 
       await em.persistAndFlush(bookmark);
       return formatBookmark(bookmark);
+    }),
+  );
+
+  app.put(
+    '/users/:uid/bookmarks',
+    {
+      schema: {
+        params: z.object({
+          uid: z.string(),
+        }),
+        body: z.array(bookmarkDataSchema),
+      },
+    },
+    handle(async ({ auth, params, body, em }) => {
+      await auth.assert();
+
+      if (auth.user.id !== params.uid)
+        throw new StatusError('Cannot modify user other than yourself', 403);
+
+      const bookmarks = await em.upsertMany(
+        Bookmark,
+        body.map((item) => ({
+          userId: params.uid,
+          tmdbId: item.tmdbId,
+          meta: item.meta,
+          updatedAt: new Date(),
+        })),
+        {
+          onConflictFields: ['tmdbId', 'userId'],
+        },
+      );
+
+      await em.flush();
+      return bookmarks.map(formatBookmark);
     }),
   );
 
