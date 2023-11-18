@@ -53,6 +53,7 @@ export class ProgressItem {
 }
 
 export interface ProgressItemDTO {
+  id: string;
   tmdbId: string;
   season: {
     id?: string;
@@ -77,6 +78,7 @@ export function formatProgressItem(
   progressItem: ProgressItem,
 ): ProgressItemDTO {
   return {
+    id: progressItem.id,
     tmdbId: progressItem.tmdbId,
     episode: {
       id: progressItem.episodeId,
