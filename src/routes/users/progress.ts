@@ -77,33 +77,42 @@ export const userProgressRouter = makeRouter((app) => {
         body: z.array(progressItemSchema),
       },
     },
-    handle(async ({ auth, params, body: newItems, em, req, limiter }) => {
+    handle(async ({ auth, params, body, em, req, limiter }) => {
       await auth.assert();
 
       if (auth.user.id !== params.uid)
         throw new StatusError('Cannot modify user other than yourself', 403);
 
-      const existingItems = await em.find(ProgressItem, { userId: params.uid });
-      const itemsToUpsert: ProgressItem[] = [];
+      const itemsUpserted: ProgressItem[] = [];
 
-      for (const newItem of newItems) {
-        const existingItem = existingItems.find(
+      const newItems = [...body];
+
+      for (const existingItem of await em.find(ProgressItem, {
+        userId: params.uid,
+      })) {
+        const newItemIndex = newItems.findIndex(
           (item) =>
-            item.tmdbId == newItem.tmdbId &&
-            item.seasonId == newItem.seasonId &&
-            item.episodeId == newItem.episodeId,
+            item.tmdbId == existingItem.tmdbId &&
+            item.seasonId == existingItem.seasonId &&
+            item.episodeId == existingItem.episodeId,
         );
 
-        if (existingItem) {
+        if (newItemIndex > -1) {
+          const newItem = newItems[newItemIndex];
           if (existingItem.watched < newItem.watched) {
             existingItem.updatedAt = new Date();
             existingItem.watched = newItem.watched;
           }
-          itemsToUpsert.push(existingItem);
-          continue;
-        }
+          itemsUpserted.push(existingItem);
 
-        itemsToUpsert.push({
+          // Remove the item from the array, we have processed it
+          newItems.splice(newItemIndex, 1);
+        }
+      }
+
+      // All unprocessed items, aka all items that don't already exist
+      for (const newItem of newItems) {
+        itemsUpserted.push({
           id: randomUUID(),
           duration: newItem.duration,
           episodeId: newItem.episodeId,
@@ -118,7 +127,7 @@ export const userProgressRouter = makeRouter((app) => {
         });
       }
 
-      const progressItems = await em.upsertMany(ProgressItem, itemsToUpsert);
+      const progressItems = await em.upsertMany(ProgressItem, itemsUpserted);
 
       await em.flush();
 
