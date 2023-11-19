@@ -12,8 +12,8 @@ import { z } from 'zod';
 const progressItemSchema = z.object({
   meta: progressMetaSchema,
   tmdbId: z.string(),
-  duration: z.number(),
-  watched: z.number(),
+  duration: z.number().transform((n) => Math.round(n)),
+  watched: z.number().transform((n) => Math.round(n)),
   seasonId: z.string().optional(),
   episodeId: z.string().optional(),
   seasonNumber: z.number().optional(),
