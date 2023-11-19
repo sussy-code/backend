@@ -1,3 +1,4 @@
+import { Session, formatSession } from '@/db/models/Session';
 import { User, formatUser } from '@/db/models/User';
 import { StatusError } from '@/services/error';
 import { handle } from '@/services/handler';
@@ -25,7 +26,17 @@ export const userGetRouter = makeRouter((app) => {
       const user = await em.findOne(User, { id: uid });
       if (!user) throw new StatusError('User does not exist', 404);
 
-      return formatUser(user);
+      let session: Session | undefined = undefined;
+
+      if (uid === '@me') {
+        session = (await auth.getSession()) ?? undefined;
+        if (!session) throw new StatusError('Session does not exist', 400);
+      }
+
+      return {
+        user: formatUser(user),
+        session: session ? formatSession(session) : undefined,
+      };
     }),
   );
 });

@@ -16,9 +16,14 @@ export function makeOrmConfig(url: string): Options<PostgreSqlDriver> {
   };
 }
 
-export async function createORM(url: string, log: (msg: string) => void) {
+export async function createORM(
+  url: string,
+  debug: boolean,
+  log: (msg: string) => void,
+) {
   return await MikroORM.init<PostgreSqlDriver>({
     ...makeOrmConfig(url),
     logger: log,
+    debug,
   });
 }

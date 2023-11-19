@@ -41,6 +41,10 @@ export const configSchema = z.object({
     // will always keep the database schema in sync with the connected database
     // it is extremely destructive, do not use it EVER in production
     syncSchema: z.coerce.boolean().default(false),
+
+    // Enable debug logging for MikroORM - Outputs queries and entity management logs
+    // Do NOT use in production, leaks all sensitive data
+    debugLogging: z.coerce.boolean().default(false),
   }),
   crypto: z.object({
     // session secret. used for signing session tokens
