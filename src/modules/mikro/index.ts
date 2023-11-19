@@ -14,8 +14,10 @@ export function getORM() {
 
 export async function setupMikroORM() {
   log.info(`Connecting to postgres`, { evt: 'connecting' });
-  const mikro = await createORM(conf.postgres.connection, (msg) =>
-    log.info(msg),
+  const mikro = await createORM(
+    conf.postgres.connection,
+    conf.postgres.debugLogging,
+    (msg) => log.info(msg),
   );
 
   if (conf.postgres.syncSchema) {
