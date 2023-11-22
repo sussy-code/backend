@@ -1,10 +1,9 @@
 import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
-import { randomUUID } from 'crypto';
 
 @Entity({ tableName: 'user_settings' })
 export class UserSettings {
-  @PrimaryKey({ name: 'id', type: 'uuid' })
-  id: string = randomUUID();
+  @PrimaryKey({ name: 'id', type: 'text' })
+  id!: string;
 
   @Property({ name: 'application_theme', nullable: true })
   applicationTheme?: string | null;
