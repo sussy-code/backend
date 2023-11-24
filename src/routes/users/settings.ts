@@ -38,9 +38,9 @@ export const userSettingsRouter = makeRouter((app) => {
           uid: z.string(),
         }),
         body: z.object({
-          applicationLanguage: z.string().optional(),
-          applicationTheme: z.string().optional(),
-          defaultSubtitleLanguage: z.string().optional(),
+          applicationLanguage: z.string().nullable().optional(),
+          applicationTheme: z.string().nullable().optional(),
+          defaultSubtitleLanguage: z.string().nullable().optional(),
         }),
       },
     },
@@ -58,12 +58,12 @@ export const userSettingsRouter = makeRouter((app) => {
         settings.id = params.uid;
       }
 
-      if (body.applicationLanguage)
+      if (body.applicationLanguage !== undefined)
         settings.applicationLanguage = body.applicationLanguage;
-      if (body.applicationTheme)
-        settings.applicationTheme = body.applicationTheme;
-      if (body.defaultSubtitleLanguage)
+      if (body.defaultSubtitleLanguage !== undefined)
         settings.defaultSubtitleLanguage = body.defaultSubtitleLanguage;
+      if (body.applicationTheme !== undefined)
+        settings.applicationTheme = body.applicationTheme;
 
       await em.persistAndFlush(settings);
       return formatUserSettings(settings);
