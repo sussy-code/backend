@@ -41,7 +41,7 @@ export const sessionRouter = makeRouter((app) => {
           sid: z.string(),
         }),
         body: z.object({
-          name: z.string().min(1).optional(),
+          deviceName: z.string().min(1).optional(),
         }),
       },
     },
@@ -53,7 +53,7 @@ export const sessionRouter = makeRouter((app) => {
       if (targetedSession.id !== params.sid)
         throw new StatusError('Cannot edit sessions other than your own', 401);
 
-      if (body.name) targetedSession.device = body.name;
+      if (body.deviceName) targetedSession.device = body.deviceName;
 
       await em.persistAndFlush(targetedSession);
 
