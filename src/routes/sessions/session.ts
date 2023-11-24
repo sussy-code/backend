@@ -41,7 +41,7 @@ export const sessionRouter = makeRouter((app) => {
           sid: z.string(),
         }),
         body: z.object({
-          name: z.string().optional(),
+          name: z.string().min(1).optional(),
         }),
       },
     },
