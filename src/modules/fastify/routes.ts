@@ -2,7 +2,7 @@ import { loginAuthRouter } from '@/routes/auth/login';
 import { manageAuthRouter } from '@/routes/auth/manage';
 import { metaRouter } from '@/routes/meta';
 import { metricsRouter } from '@/routes/metrics';
-import { sessionsRouter } from '@/routes/sessions';
+import { sessionsRouter } from '@/routes/sessions/sessions';
 import { userBookmarkRouter } from '@/routes/users/bookmark';
 import { userDeleteRouter } from '@/routes/users/delete';
 import { userEditRouter } from '@/routes/users/edit';

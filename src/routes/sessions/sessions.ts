@@ -13,7 +13,7 @@ export const sessionsRouter = makeRouter((app) => {
           sid: z.string(),
         }),
         body: z.object({
-          name: z.string().max(500).min(1).optional(),
+          deviceName: z.string().max(500).min(1).optional(),
         }),
       },
     },
@@ -25,10 +25,10 @@ export const sessionsRouter = makeRouter((app) => {
       if (!targetedSession)
         throw new StatusError('Session cannot be found', 404);
 
-      if (targetedSession.user !== auth.user.id)
-        throw new StatusError('Cannot modify sessions you do not own', 401);
+      if (targetedSession.id !== params.sid)
+        throw new StatusError('Cannot edit sessions other than your own', 401);
 
-      if (body.name) targetedSession.device = body.name;
+      if (body.deviceName) targetedSession.device = body.deviceName;
 
       await em.persistAndFlush(targetedSession);
 
