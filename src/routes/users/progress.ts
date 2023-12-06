@@ -100,9 +100,10 @@ export const userProgressRouter = makeRouter((app) => {
 
         if (newItemIndex > -1) {
           const newItem = newItems[newItemIndex];
-          const newItemDate = defaultAndCoerceDateTime(newItem.updatedAt);
-          if (existingItem.updatedAt.getTime() < newItemDate.getTime()) {
-            existingItem.updatedAt = newItemDate;
+          if (existingItem.watched < newItem.watched) {
+            existingItem.updatedAt = defaultAndCoerceDateTime(
+              newItem.updatedAt,
+            );
             existingItem.watched = newItem.watched;
           }
           itemsUpserted.push(existingItem);
