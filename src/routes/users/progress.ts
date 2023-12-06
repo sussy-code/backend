@@ -60,7 +60,7 @@ export const userProgressRouter = makeRouter((app) => {
         duration: body.duration,
         watched: body.watched,
         meta: body.meta,
-        updatedAt: defaultAndCoerceDateTime(body.updatedAt),
+        updatedAt: new Date(),
       });
 
       await em.persistAndFlush(progressItem);
