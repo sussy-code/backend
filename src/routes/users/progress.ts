@@ -18,6 +18,7 @@ const progressItemSchema = z.object({
   episodeId: z.string().optional(),
   seasonNumber: z.number().optional(),
   episodeNumber: z.number().optional(),
+  updatedAt: z.string().datetime({ offset: true }).optional(),
 });
 
 export const userProgressRouter = makeRouter((app) => {
@@ -100,7 +101,9 @@ export const userProgressRouter = makeRouter((app) => {
         if (newItemIndex > -1) {
           const newItem = newItems[newItemIndex];
           if (existingItem.watched < newItem.watched) {
-            existingItem.updatedAt = new Date();
+            existingItem.updatedAt = defaultAndCoerceDateTime(
+              newItem.updatedAt,
+            );
             existingItem.watched = newItem.watched;
           }
           itemsUpserted.push(existingItem);
@@ -123,7 +126,7 @@ export const userProgressRouter = makeRouter((app) => {
           tmdbId: newItem.tmdbId,
           userId: params.uid,
           watched: newItem.watched,
-          updatedAt: new Date(),
+          updatedAt: defaultAndCoerceDateTime(newItem.updatedAt),
         });
       }
 
@@ -207,3 +210,14 @@ export const userProgressRouter = makeRouter((app) => {
     }),
   );
 });
+
+// 13th July 2021 - movie-web epoch
+const minEpoch = 1626134400000;
+
+function defaultAndCoerceDateTime(dateTime: string | undefined) {
+  const epoch = dateTime ? new Date(dateTime).getTime() : Date.now();
+
+  const clampedEpoch = Math.max(minEpoch, Math.min(epoch, Date.now()));
+
+  return new Date(clampedEpoch);
+}
