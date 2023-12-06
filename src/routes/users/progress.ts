@@ -211,8 +211,8 @@ export const userProgressRouter = makeRouter((app) => {
   );
 });
 
-// 1st August 2021 - movie-web epoch
-const minEpoch = 1627776000000;
+// 13th July 2021 - movie-web epoch
+const minEpoch = 1626134400000;
 
 function defaultAndCoerceDateTime(dateTime: string | undefined) {
   const epoch = dateTime ? new Date(dateTime).getTime() : Date.now();
