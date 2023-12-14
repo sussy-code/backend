@@ -6,7 +6,6 @@ import {
 import { StatusError } from '@/services/error';
 import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
-import { randomUUID } from 'crypto';
 import { z } from 'zod';
 
 const bookmarkDataSchema = z.object({
