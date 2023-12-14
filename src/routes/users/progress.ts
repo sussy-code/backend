@@ -6,6 +6,7 @@ import {
 import { StatusError } from '@/services/error';
 import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
+import { FilterQuery } from '@mikro-orm/core';
 import { randomUUID } from 'crypto';
 import { z } from 'zod';
 
@@ -164,22 +165,28 @@ export const userProgressRouter = makeRouter((app) => {
       if (auth.user.id !== params.uid)
         throw new StatusError('Cannot modify user other than yourself', 403);
 
-      const progressItem = await em.findOne(ProgressItem, {
+      const query: FilterQuery<ProgressItem> = {
         userId: params.uid,
         tmdbId: params.tmdbid,
-        episodeId: body.episodeId,
-        seasonId: body.seasonId,
-      });
-      if (!progressItem) {
+      };
+      if (body.seasonId) query.seasonId = body.seasonId;
+      if (body.episodeId) query.episodeId = body.episodeId;
+      const progressItems = await em.find(ProgressItem, query);
+
+      if (progressItems.length === 0) {
         return {
+          count: 0,
           tmdbId: params.tmdbid,
           episodeId: body.episodeId,
           seasonId: body.seasonId,
         };
       }
 
-      await em.removeAndFlush(progressItem);
+      progressItems.forEach((v) => em.remove(v));
+      await em.flush();
+
       return {
+        count: progressItems.length,
         tmdbId: params.tmdbid,
         episodeId: body.episodeId,
         seasonId: body.seasonId,
