@@ -9,17 +9,9 @@ const log = scopedLogger('metrics');
 
 export type Metrics = {
   user: Counter<'namespace'>;
-  providerMetrics: Counter<
-    | 'title'
-    | 'tmdb_id'
-    | 'season_id'
-    | 'episode_id'
-    | 'status'
-    | 'type'
-    | 'provider_id'
-    | 'embed_id'
-    | 'hostname'
-  >;
+  providerHostnames: Counter<'hostname'>;
+  providerStatuses: Counter<'provider_id' | 'status'>;
+  watchMetrics: Counter<'title' | 'tmdb_full_id' | 'provider_id' | 'success'>;
 };
 
 let metrics: null | Metrics = null;
@@ -42,31 +34,33 @@ export async function setupMetrics(app: FastifyInstance) {
 
   metrics = {
     user: new Counter({
-      name: 'user_count',
-      help: 'user_help',
+      name: 'mw_user_count',
+      help: 'mw_user_help',
       labelNames: ['namespace'],
     }),
-    providerMetrics: new Counter({
-      name: 'provider_metrics',
-      help: 'provider_metrics',
-      labelNames: [
-        'episode_id',
-        'provider_id',
-        'season_id',
-        'status',
-        'title',
-        'tmdb_id',
-        'type',
-        'embed_id',
-        'hostname',
-      ],
+    providerHostnames: new Counter({
+      name: 'mw_provider_hostname_count',
+      help: 'mw_provider_hostname_count',
+      labelNames: ['hostname'],
+    }),
+    providerStatuses: new Counter({
+      name: 'mw_provider_status_count',
+      help: 'mw_provider_status_count',
+      labelNames: ['provider_id', 'status'],
+    }),
+    watchMetrics: new Counter({
+      name: 'mw_media_watch_count',
+      help: 'mw_media_watch_count',
+      labelNames: ['title', 'tmdb_full_id', 'provider_id', 'success'],
     }),
   };
 
   const promClient = app.metrics.client;
 
   promClient.register.registerMetric(metrics.user);
-  promClient.register.registerMetric(metrics.providerMetrics);
+  promClient.register.registerMetric(metrics.providerHostnames);
+  promClient.register.registerMetric(metrics.providerStatuses);
+  promClient.register.registerMetric(metrics.watchMetrics);
 
   const orm = getORM();
   const em = orm.em.fork();
