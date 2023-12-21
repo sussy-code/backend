@@ -16,6 +16,9 @@ export const configSchema = z.object({
       // should it trust reverse proxy headers? (for ip gathering)
       trustProxy: z.coerce.boolean().default(false),
 
+      // should it trust cloudflare headers? (for ip gathering, cloudflare has priority)
+      trustCloudflare: z.coerce.boolean().default(false),
+
       // prefix for where the instance is run on. for example set it to /backend if you're hosting it on example.com/backend
       // if this is set, do not apply url rewriting before proxing
       basePath: z.string().default('/'),

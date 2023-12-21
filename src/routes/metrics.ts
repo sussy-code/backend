@@ -1,8 +1,8 @@
 import { handle } from '@/services/handler';
 import { makeRouter } from '@/services/router';
 import { z } from 'zod';
-import { ProviderMetric, status } from '@/db/models/ProviderMetrics';
 import { getMetrics } from '@/modules/metrics';
+import { status } from '@/routes/statuses';
 
 const metricsProviderSchema = z.object({
   tmdbId: z.string(),
@@ -29,7 +29,7 @@ export const metricsRouter = makeRouter((app) => {
         body: metricsProviderInputSchema,
       },
     },
-    handle(async ({ em, body, req, limiter }) => {
+    handle(async ({ body, req, limiter }) => {
       await limiter?.assertAndBump(req, {
         id: 'provider_metrics',
         max: 300,
@@ -37,43 +37,59 @@ export const metricsRouter = makeRouter((app) => {
         window: '30m',
       });
 
-      const hostname = req.headers.origin?.slice(0, 255) ?? 'unknown origin';
-
-      const entities = body.items.map((v) => {
-        const errorMessage = v.errorMessage?.slice(0, 200);
-        const truncatedFullError = v.fullError?.slice(0, 2000);
-
-        const metric = new ProviderMetric();
-        em.assign(metric, {
-          providerId: v.providerId,
-          embedId: v.embedId,
-          fullError: truncatedFullError,
-          errorMessage: errorMessage,
-          episodeId: v.episodeId,
-          seasonId: v.seasonId,
-          status: v.status,
-          title: v.title,
-          tmdbId: v.tmdbId,
-          type: v.type,
-          hostname,
-        });
-        return metric;
+      const hostname = req.headers.origin?.slice(0, 255) ?? '<UNKNOWN>';
+      getMetrics().providerHostnames.inc({
+        hostname,
       });
 
-      entities.forEach((entity) => {
-        getMetrics().providerMetrics.inc({
-          episode_id: entity.episodeId,
-          provider_id: entity.providerId,
-          season_id: entity.seasonId,
-          status: entity.status,
-          title: entity.title,
-          tmdb_id: entity.tmdbId,
-          type: entity.type,
-          hostname,
+      body.items.forEach((item) => {
+        getMetrics().providerStatuses.inc({
+          provider_id: item.embedId ?? item.providerId,
+          status: item.status,
         });
       });
 
-      await em.persistAndFlush(entities);
+      const itemList = [...body.items];
+      itemList.reverse();
+      const lastSuccessfulItem = body.items.find(
+        (v) => v.status === status.success,
+      );
+      const lastItem = itemList[0];
+
+      if (lastItem) {
+        getMetrics().watchMetrics.inc({
+          tmdb_full_id: lastItem.type + '-' + lastItem.tmdbId,
+          provider_id: lastSuccessfulItem?.providerId ?? lastItem.providerId,
+          title: lastItem.title,
+          success: (!!lastSuccessfulItem).toString(),
+        });
+      }
+
+      return true;
+    }),
+  );
+
+  app.post(
+    '/metrics/captcha',
+    {
+      schema: {
+        body: z.object({
+          success: z.boolean(),
+        }),
+      },
+    },
+    handle(async ({ body, req, limiter }) => {
+      await limiter?.assertAndBump(req, {
+        id: 'captcha_solves',
+        max: 300,
+        inc: 1,
+        window: '30m',
+      });
+
+      getMetrics().captchaSolves.inc({
+        success: body.success.toString(),
+      });
+
       return true;
     }),
   );

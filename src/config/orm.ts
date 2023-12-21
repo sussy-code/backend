@@ -1,5 +1,12 @@
+import { devFragment } from '@/config/fragments/dev';
+import { dockerFragment } from '@/config/fragments/docker';
 import { createConfigLoader } from 'neat-config';
 import { z } from 'zod';
+
+const fragments = {
+  dev: devFragment,
+  dockerdev: dockerFragment,
+};
 
 export const ormConfigSchema = z.object({
   postgres: z.object({
@@ -15,6 +22,8 @@ export const ormConf = createConfigLoader()
     prefix: 'MWB_',
   })
   .addFromFile('config.json')
+  .setFragmentKey('usePresets')
+  .addConfigFragments(fragments)
   .addZodSchema(ormConfigSchema)
   .freeze()
   .load();

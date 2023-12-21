@@ -12,6 +12,8 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
      - 'postgres_data:/var/lib/postgresql/data'
+  redis:
+    image: redis
 
   # custom services
   backend:
