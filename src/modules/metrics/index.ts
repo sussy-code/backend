@@ -67,6 +67,7 @@ export async function setupMetrics(app: FastifyInstance) {
   promClient.register.registerMetric(metrics.providerHostnames);
   promClient.register.registerMetric(metrics.providerStatuses);
   promClient.register.registerMetric(metrics.watchMetrics);
+  promClient.register.registerMetric(metrics.captchaSolves);
 
   const orm = getORM();
   const em = orm.em.fork();
