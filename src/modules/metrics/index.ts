@@ -9,6 +9,7 @@ const log = scopedLogger('metrics');
 
 export type Metrics = {
   user: Counter<'namespace'>;
+  captchaSolves: Counter<'success'>;
   providerHostnames: Counter<'hostname'>;
   providerStatuses: Counter<'provider_id' | 'status'>;
   watchMetrics: Counter<'title' | 'tmdb_full_id' | 'provider_id' | 'success'>;
@@ -37,6 +38,11 @@ export async function setupMetrics(app: FastifyInstance) {
       name: 'mw_user_count',
       help: 'mw_user_help',
       labelNames: ['namespace'],
+    }),
+    captchaSolves: new Counter({
+      name: 'mw_captcha_solves',
+      help: 'mw_captcha_solves',
+      labelNames: ['success'],
     }),
     providerHostnames: new Counter({
       name: 'mw_provider_hostname_count',

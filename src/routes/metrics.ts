@@ -58,12 +58,37 @@ export const metricsRouter = makeRouter((app) => {
 
       if (lastItem) {
         getMetrics().watchMetrics.inc({
-          tmdb_full_id: lastItem.tmdbId,
+          tmdb_full_id: lastItem.type + '-' + lastItem.tmdbId,
           provider_id: lastSuccessfulItem?.providerId ?? lastItem.providerId,
           title: lastItem.title,
           success: (!!lastSuccessfulItem).toString(),
         });
       }
+
+      return true;
+    }),
+  );
+
+  app.post(
+    '/metrics/captcha',
+    {
+      schema: {
+        body: z.object({
+          success: z.boolean(),
+        }),
+      },
+    },
+    handle(async ({ body, req, limiter }) => {
+      await limiter?.assertAndBump(req, {
+        id: 'captcha_solves',
+        max: 300,
+        inc: 1,
+        window: '30m',
+      });
+
+      getMetrics().captchaSolves.inc({
+        success: body.success.toString(),
+      });
 
       return true;
     }),
