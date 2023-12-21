@@ -2,6 +2,7 @@ import Redis from 'ioredis';
 import RateLimiter from 'async-ratelimiter';
 import ms from 'ms';
 import { StatusError } from '@/services/error';
+import { IpReq, getIp } from '@/services/ip';
 
 export interface LimiterOptions {
   redis: Redis;
@@ -26,8 +27,8 @@ export class Limiter {
     this.redis = ops.redis;
   }
 
-  async bump(req: { ip: string }, ops: BucketOptions) {
-    const ip = req.ip;
+  async bump(req: IpReq, ops: BucketOptions) {
+    const ip = getIp(req);
     if (!this.buckets[ops.id]) {
       this.buckets[ops.id] = {
         limiter: new RateLimiter({
@@ -54,7 +55,7 @@ export class Limiter {
     };
   }
 
-  async assertAndBump(req: { ip: string }, ops: BucketOptions) {
+  async assertAndBump(req: IpReq, ops: BucketOptions) {
     const { hasBeenLimited } = await this.bump(req, ops);
     if (hasBeenLimited) {
       throw new StatusError('Ratelimited', 429);
