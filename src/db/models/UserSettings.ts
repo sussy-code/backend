@@ -13,6 +13,9 @@ export class UserSettings {
 
   @Property({ name: 'default_subtitle_language', nullable: true })
   defaultSubtitleLanguage?: string | null;
+
+  @Property({ name: 'proxy_urls', nullable: true, type: 'text[]' })
+  proxyUrls?: string[] | null;
 }
 
 export interface UserSettingsDTO {
@@ -20,6 +23,7 @@ export interface UserSettingsDTO {
   applicationTheme?: string | null;
   applicationLanguage?: string | null;
   defaultSubtitleLanguage?: string | null;
+  proxyUrls?: string[] | null;
 }
 
 export function formatUserSettings(
@@ -30,5 +34,6 @@ export function formatUserSettings(
     applicationTheme: userSettings.applicationTheme,
     applicationLanguage: userSettings.applicationLanguage,
     defaultSubtitleLanguage: userSettings.defaultSubtitleLanguage,
+    proxyUrls: userSettings.proxyUrls,
   };
 }
