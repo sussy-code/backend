@@ -48,6 +48,9 @@ export const configSchema = z.object({
     // Enable debug logging for MikroORM - Outputs queries and entity management logs
     // Do NOT use in production, leaks all sensitive data
     debugLogging: z.coerce.boolean().default(false),
+
+    // Enable SSL for the postgres connection
+    ssl: z.coerce.boolean().default(false),
   }),
   crypto: z.object({
     // session secret. used for signing session tokens
