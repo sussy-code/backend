@@ -8,16 +8,16 @@
   },
   "scripts": {
     "dev": "nodemon -r tsconfig-paths/register src/main.ts",
-    "build": "npm run build:pre && npm run build:compile",
+    "build": "pnpm run build:pre && pnpm run build:compile",
     "start": "node dist/main.js",
     "lint": "eslint --ext .ts,.js,.json,.tsx src/",
     "lint:fix": "eslint --fix --ext .ts,.js,.json,.tsx src/",
     "build:pre": "rimraf dist/",
     "build:compile": "tsc && tsc-alias",
     "preinstall": "npx -y only-allow pnpm",
-    "migration:create": "npx -y mikro-orm migration:create",
-    "migration:up": "npx -y mikro-orm migration:up",
-    "migration:down": "npx -y mikro-orm migration:down"
+    "migration:create": "pnpm exec mikro-orm migration:create",
+    "migration:up": "pnpm exec mikro-orm migration:up",
+    "migration:down": "pnpm exec mikro-orm migration:down"
   },
   "mikro-orm": {
     "useTsNode": true,
