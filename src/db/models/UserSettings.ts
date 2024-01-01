@@ -1,4 +1,4 @@
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { ArrayType, Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
 @Entity({ tableName: 'user_settings' })
 export class UserSettings {
@@ -14,7 +14,7 @@ export class UserSettings {
   @Property({ name: 'default_subtitle_language', nullable: true })
   defaultSubtitleLanguage?: string | null;
 
-  @Property({ name: 'proxy_urls', nullable: true, type: 'text[]' })
+  @Property({ name: 'proxy_urls', type: ArrayType, nullable: true })
   proxyUrls?: string[] | null;
 }
 
