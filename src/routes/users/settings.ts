@@ -41,6 +41,7 @@ export const userSettingsRouter = makeRouter((app) => {
           applicationLanguage: z.string().nullable().optional(),
           applicationTheme: z.string().nullable().optional(),
           defaultSubtitleLanguage: z.string().nullable().optional(),
+          proxyUrls: z.string().array().nullable().optional(),
         }),
       },
     },
@@ -64,6 +65,7 @@ export const userSettingsRouter = makeRouter((app) => {
         settings.defaultSubtitleLanguage = body.defaultSubtitleLanguage;
       if (body.applicationTheme !== undefined)
         settings.applicationTheme = body.applicationTheme;
+      if (body.proxyUrls !== undefined) settings.proxyUrls = body.proxyUrls;
 
       await em.persistAndFlush(settings);
       return formatUserSettings(settings);

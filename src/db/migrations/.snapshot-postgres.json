@@ -483,6 +483,15 @@
           "primary": false,
           "nullable": true,
           "mappedType": "string"
+        },
+        "proxy_urls": {
+          "name": "proxy_urls",
+          "type": "text[]",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "array"
         }
       },
       "name": "user_settings",
