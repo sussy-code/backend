@@ -18,6 +18,7 @@ export async function setupMikroORM() {
     conf.postgres.connection,
     conf.postgres.debugLogging,
     (msg) => log.info(msg),
+    conf.postgres.ssl,
   );
 
   if (conf.postgres.syncSchema) {
