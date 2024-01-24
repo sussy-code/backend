@@ -14,7 +14,7 @@ export const ormConfigSchema = z.object({
     // connection URL for postgres database
     connection: z.string(),
     // whether to use SSL for the connection
-    ssl: booleanSchema,
+    ssl: booleanSchema.default(false),
   }),
 });
 
