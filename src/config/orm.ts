@@ -2,6 +2,7 @@ import { devFragment } from '@/config/fragments/dev';
 import { dockerFragment } from '@/config/fragments/docker';
 import { createConfigLoader } from 'neat-config';
 import { z } from 'zod';
+import { booleanSchema } from './schema';
 
 const fragments = {
   dev: devFragment,
@@ -13,7 +14,7 @@ export const ormConfigSchema = z.object({
     // connection URL for postgres database
     connection: z.string(),
     // whether to use SSL for the connection
-    ssl: z.coerce.boolean().default(false),
+    ssl: booleanSchema,
   }),
 });
 
