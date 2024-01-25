@@ -68,7 +68,7 @@ export const metricsRouter = makeRouter((app) => {
 
       if (body.tool) {
         getMetrics().toolMetrics.inc({
-          tool: body.tool
+          tool: body.tool,
         });
       }
 
