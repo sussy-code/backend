@@ -13,6 +13,7 @@ export type Metrics = {
   providerHostnames: Counter<'hostname'>;
   providerStatuses: Counter<'provider_id' | 'status'>;
   watchMetrics: Counter<'title' | 'tmdb_full_id' | 'provider_id' | 'success'>;
+  toolMetrics: Counter<'tool'>;
 };
 
 let metrics: null | Metrics = null;
@@ -59,6 +60,11 @@ export async function setupMetrics(app: FastifyInstance) {
       help: 'mw_media_watch_count',
       labelNames: ['title', 'tmdb_full_id', 'provider_id', 'success'],
     }),
+    toolMetrics: new Counter({
+      name: 'mw_provider_tool_count',
+      help: 'mw_provider_tool_count',
+      labelNames: ['tool'],
+    }),
   };
 
   const promClient = app.metrics.client;
@@ -68,6 +74,7 @@ export async function setupMetrics(app: FastifyInstance) {
   promClient.register.registerMetric(metrics.providerStatuses);
   promClient.register.registerMetric(metrics.watchMetrics);
   promClient.register.registerMetric(metrics.captchaSolves);
+  promClient.register.registerMetric(metrics.toolMetrics);
 
   const orm = getORM();
   const em = orm.em.fork();

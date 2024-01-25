@@ -19,6 +19,7 @@ const metricsProviderSchema = z.object({
 
 const metricsProviderInputSchema = z.object({
   items: z.array(metricsProviderSchema).max(10).min(1),
+  tool: z.string().optional(),
 });
 
 export const metricsRouter = makeRouter((app) => {
@@ -62,6 +63,12 @@ export const metricsRouter = makeRouter((app) => {
           provider_id: lastSuccessfulItem?.providerId ?? lastItem.providerId,
           title: lastItem.title,
           success: (!!lastSuccessfulItem).toString(),
+        });
+      }
+
+      if (body.tool) {
+        getMetrics().toolMetrics.inc({
+          tool: body.tool
         });
       }
 
