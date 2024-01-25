@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export const booleanSchema = z.preprocess((val) => val === 'true', z.boolean());
+
 export const configSchema = z.object({
   server: z
     .object({
@@ -11,13 +13,13 @@ export const configSchema = z.object({
 
       // disable cross origin restrictions, allow any site.
       // overwrites the cors option above
-      allowAnySite: z.coerce.boolean().default(false),
+      allowAnySite: booleanSchema.default(false),
 
       // should it trust reverse proxy headers? (for ip gathering)
-      trustProxy: z.coerce.boolean().default(false),
+      trustProxy: booleanSchema.default(false),
 
       // should it trust cloudflare headers? (for ip gathering, cloudflare has priority)
-      trustCloudflare: z.coerce.boolean().default(false),
+      trustCloudflare: booleanSchema.default(false),
 
       // prefix for where the instance is run on. for example set it to /backend if you're hosting it on example.com/backend
       // if this is set, do not apply url rewriting before proxing
@@ -30,7 +32,7 @@ export const configSchema = z.object({
       format: z.enum(['json', 'pretty']).default('pretty'),
 
       // show debug logs?
-      debug: z.coerce.boolean().default(false),
+      debug: booleanSchema.default(false),
     })
     .default({}),
   postgres: z.object({
@@ -38,19 +40,19 @@ export const configSchema = z.object({
     connection: z.string(),
 
     // run all migrations on boot of the application
-    migrateOnBoot: z.coerce.boolean().default(false),
+    migrateOnBoot: booleanSchema.default(false),
 
     // try to sync the schema on boot, useful for development
     // will always keep the database schema in sync with the connected database
     // it is extremely destructive, do not use it EVER in production
-    syncSchema: z.coerce.boolean().default(false),
+    syncSchema: booleanSchema.default(false),
 
     // Enable debug logging for MikroORM - Outputs queries and entity management logs
     // Do NOT use in production, leaks all sensitive data
-    debugLogging: z.coerce.boolean().default(false),
+    debugLogging: booleanSchema.default(false),
 
     // Enable SSL for the postgres connection
-    ssl: z.coerce.boolean().default(false),
+    ssl: booleanSchema.default(false),
   }),
   crypto: z.object({
     // session secret. used for signing session tokens
@@ -65,7 +67,7 @@ export const configSchema = z.object({
   captcha: z
     .object({
       // enabled captchas on register
-      enabled: z.coerce.boolean().default(false),
+      enabled: booleanSchema.default(false),
 
       // captcha secret
       secret: z.string().min(1).optional(),
@@ -76,7 +78,7 @@ export const configSchema = z.object({
   ratelimits: z
     .object({
       // enabled captchas on register
-      enabled: z.coerce.boolean().default(false),
+      enabled: booleanSchema.default(false),
       redisUrl: z.string().optional(),
     })
     .default({}),
