@@ -1,3 +1,4 @@
+import { indexRouter } from '@/routes';
 import { loginAuthRouter } from '@/routes/auth/login';
 import { manageAuthRouter } from '@/routes/auth/manage';
 import { metaRouter } from '@/routes/meta';
@@ -25,4 +26,5 @@ export async function setupRoutes(app: FastifyInstance) {
   await app.register(userSettingsRouter.register);
   await app.register(userGetRouter.register);
   await app.register(metricsRouter.register);
+  await app.register(indexRouter.register);
 }
