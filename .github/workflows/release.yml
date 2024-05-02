@@ -21,7 +21,7 @@ jobs:
     - name: Create Release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        TOKEN: ${{ secrets.TOKEN }}
       with:
         tag_name: ${{ steps.package-version.outputs.current-version }}
         release_name: Backend v${{ steps.package-version.outputs.current-version }}
