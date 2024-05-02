@@ -1,2 +1,2 @@
 # backend
-Backend for movie-web
+Backend for sudo-flix
